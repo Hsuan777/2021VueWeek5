@@ -14,7 +14,7 @@ git init
 git add -A
 git commit -m "deploy"
 git branch -M gh-pages
-git remote add origin https://github.com/Hsuan777/2021VueWeek2.git
+git remote add origin https://github.com/Hsuan777/2021VueWeek3.git
 git push -f origin gh-pages
 
 cd -
