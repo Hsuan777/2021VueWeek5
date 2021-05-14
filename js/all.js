@@ -4,10 +4,36 @@ const App = Vue.createApp({
       url: 'https://vue3-course-api.hexschool.io',
       path: '',
       userInfo: {},
-      hasLogin: false
+      hasLogin: false,
+      tabList: ['商品', '訂單', '優惠券', '文章'],
+      selectTabName: '',
+      originProductsData: []
     };
   },
   methods: {
+    getProduct() {
+      axios.get(`${this.url}/api/${this.path}/admin/products?page=1`).then(res => {
+        console.log(res.data.products);
+        this.originProductsData = res.data.products;
+      })
+    },
+    selectTab(item) {
+      switch (item) {
+        case '商品':
+          this.selectTabName = item
+          this.getProduct()
+          break;
+        case '訂單':
+          this.selectTabName = item
+          break;
+        case '優惠券':
+          this.selectTabName = item
+          break;
+        case '文章':
+          this.selectTabName = item
+          break;
+      }
+    },
     signIn() {
       axios.post(`${this.url}/admin/signin`, this.userInfo).then(res => {
         const token = res.data.token;
@@ -43,7 +69,7 @@ const App = Vue.createApp({
     }
   },
   created() {
-    this.checkLogin()
+    this.checkLogin();
   }
 });
 App.mount("#app");
