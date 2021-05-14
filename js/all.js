@@ -17,6 +17,13 @@ const App = Vue.createApp({
         this.originProductsData = res.data.products;
       })
     },
+    deleteProduct(itemId) {
+      console.log(itemId);
+      axios.delete(`${this.url}/api/${this.path}/admin/product/${itemId}`).then(res => {
+        console.log(res.data);
+        this.getProduct()
+      })
+    },
     selectTab(item) {
       switch (item) {
         case '商品':
