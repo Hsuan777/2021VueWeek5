@@ -21,9 +21,9 @@
         </div>
       </div>
     </nav>  
-    <section class="container mt-5">
+    <section class="container mt-5" v-if="!hasLogin">
       <div class="row">
-        <div class="col-4 mx-auto" v-if="!hasLogin">
+        <div class="col-4 mx-auto">
           <h2 class="text-center mb-3">Login</h2>
           <form action="" @submit.prevent="signIn">
             <div class="form-floating mb-3">
@@ -42,7 +42,7 @@
         </div>
       </div>
     </section>
-    <section class="container">
+    <section class="container mt-5" v-else>
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="userPath" placeholder="API 路徑" v-model="path">
         <label for="userPath">使用者路徑</label>
