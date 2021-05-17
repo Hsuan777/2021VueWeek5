@@ -2,19 +2,34 @@ const App = Vue.createApp({
   data() {
     return {
       url: 'https://vue3-course-api.hexschool.io',
-      path: '',
+      path: 'vs',
       userInfo: {},
       hasLogin: false,
+      displayData: {
+        products: true,
+        orders: false
+      },
       tabList: ['商品', '訂單', '優惠券', '文章'],
-      selectTabName: '',
-      originProductsData: []
+      selectTabName: '商品',
+      originData: {
+        products: [],
+        orders: []
+      }
     };
   },
   methods: {
-    getProduct() {
-      axios.get(`${this.url}/api/${this.path}/admin/products?page=1`).then(res => {
+    getProduct(page = 1) {
+      axios.get(`${this.url}/api/${this.path}/admin/products?page=${page}`).then(res => {
         console.log(res.data.products);
-        this.originProductsData = res.data.products;
+        this.originData.products = res.data.products;
+      }).catch(res => {
+        console.log(res);
+      })
+    },
+    getOrder(page = 1) {
+      axios.get(`${this.url}/api/${this.path}/admin/orders?page=${page}`).then(res => {
+        console.log(res.data.orders);
+        this.originData.orders = res.data.orders;
       })
     },
     deleteProduct(itemId) {
@@ -28,10 +43,15 @@ const App = Vue.createApp({
       switch (item) {
         case '商品':
           this.selectTabName = item
+          this.displayData.products = !this.displayData.products
+          this.displayData.orders = !this.displayData.orders
           this.getProduct()
           break;
         case '訂單':
           this.selectTabName = item
+          this.displayData.products = !this.displayData.products
+          this.displayData.orders = !this.displayData.orders
+          this.getOrder()
           break;
         case '優惠券':
           this.selectTabName = item
@@ -67,6 +87,7 @@ const App = Vue.createApp({
         if (res.data.success === false) {
           this.hasLogin = false
         } else {
+          this.getProduct();
           this.hasLogin = true;
         }
       })

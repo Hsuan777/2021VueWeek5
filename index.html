@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/all.css">
-  <title>Document</title>
+  <title>後台管理</title>
 </head>
 <body>
   <div id="app">
@@ -21,6 +21,7 @@
         </div>
       </div>
     </nav>  
+    <!-- 登入 -->
     <section class="container mt-5" v-if="!hasLogin">
       <div class="row">
         <div class="col-4 mx-auto">
@@ -42,13 +43,14 @@
         </div>
       </div>
     </section>
+    <!-- 列表 -->
     <section class="container mt-5" v-else>
       <div class="d-flex justify-content-between align-items-center">
         <div class="form-floating mb-3">
           <input type="text" class="form-control" id="userPath" placeholder="API 路徑" v-model="path">
           <label for="userPath">使用者路徑</label>
         </div>
-        <input type="button" value="Update" class="btn btn-primary">
+        <input type="button" value="Update" class="btn btn-primary" @click="checkLogin">
       </div>
       <h2>列表</h2>
       <div class="card text-center">
@@ -59,42 +61,80 @@
           </li>
         </ul>
       </div>
-      <div class="card-body">
-        <h5 class="card-title" v-if="!selectTabName">請選擇頁籤</h5>
-        <table class="table" v-else>
-          <thead>
-            <tr>
-              <th>分類</th>
-              <th>標題</th>
-              <th>描述</th>
-              <th>售價</th>
-              <th>上架</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in originProductsData" :key="item.id">
-              <td>{{item.category}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.description}}</td>
-              <td>{{item.price}}</td>
-              <td class="align-middle">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="${item.id}" :checked="item.is_enabled">
-                  <label class="form-check-label" for="${item.id}">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
-                  <!-- <label class="form-check-label" for="${item.id}">{{${item.is_enabled.boolen() ? '已啟用' : '未啟用'}}}</label> -->
-                </div>
-              </td>
-              <td>
-                <div class="d-flex">
-                  <input type="button" value="修改" class="btn btn-warning me-2">
-                  <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteProduct(item.id)">
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <template v-if="displayData.products">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>分類</th>
+                <th>標題</th>
+                <th>描述</th>
+                <th>售價</th>
+                <th>上架</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in originData.products" :key="item.id">
+                <td>{{item.category}}</td>
+                <td>{{item.title}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.price}}</td>
+                <td class="align-middle">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="${item.id}" :checked="item.is_enabled">
+                    <label class="form-check-label" for="${item.id}">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <input type="button" value="修改" class="btn btn-warning me-2">
+                    <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteProduct(item.id)">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+      <template v-if="displayData.orders">
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>訂購人</th>
+                <th>聯絡信箱</th>
+                <th>連絡電話</th>
+                <th>住址</th>
+                <th>商品</th>
+                <th>付款狀態</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in originData.orders" :key="item.id">
+                <td>{{item.user.name}}</td>
+                <td>{{item.user.email}}</td>
+                <td>{{item.user.tel}}</td>
+                <td>{{item.user.address}}</td>
+                <td>
+                  <p v-for="item in item.products" :key="item.product.id">
+                    {{item.product.title}}
+                  </p>
+                </td>
+                <td>{{item.is_paid}}</td>
+                <td>
+                  <div class="d-flex">
+                    <input type="button" value="修改" class="btn btn-warning me-2">
+                    <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteProduct(item.id)">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+
     </div>
     </section>
   </div>
