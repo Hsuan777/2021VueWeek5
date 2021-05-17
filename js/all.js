@@ -14,6 +14,9 @@ const App = Vue.createApp({
       originData: {
         products: [],
         orders: []
+      },
+      tempData: {
+        product: {}
       }
     };
   },
@@ -27,9 +30,31 @@ const App = Vue.createApp({
       })
     },
     getOrder(page = 1) {
-      axios.get(`${this.url}/api/${this.path}/admin/orders?page=${page}`).then(res => {
+      axios.get(`${this.url}/api/${this.path}/admin/orders?page=${page}`,).then(res => {
         console.log(res.data.orders);
         this.originData.orders = res.data.orders;
+      })
+    },
+    addProduct() {
+      this.tempData.product = {
+        data: {
+          title: "[賣]動物園造型衣服3", 
+          category: "衣服2",
+          origin_price: 100,
+          price: 300,
+          unit: "個",
+          description: "Sit down please 名設計師設計",
+          content: "這是內容",
+          is_enabled: 0,
+          imageUrl : "主圖網址",
+          imagesUrl: [
+            "圖片網址一",
+          ]
+        }
+      }
+      axios.post(`${this.url}/api/${this.path}/admin/product`, this.tempData.product).then(res => {
+        console.log(res.data);
+        this.getProduct()
       })
     },
     deleteProduct(itemId) {
@@ -40,6 +65,7 @@ const App = Vue.createApp({
       })
     },
     selectTab(item) {
+      // 點自己會錯亂
       switch (item) {
         case '商品':
           this.selectTabName = item
@@ -68,6 +94,7 @@ const App = Vue.createApp({
         document.cookie = `hexToken=${token}; expires=${new Date(expired)};`;
         this.hasLogin = true
         console.log(res.data.message);
+        this.userInfo = {}
         this.checkLogin()
       }).catch(() => {
         this.hasLogin = false
@@ -92,9 +119,6 @@ const App = Vue.createApp({
         }
       })
     },
-    formReset() {
-      this.userInfo = {};
-    }
   },
   created() {
     this.checkLogin();
