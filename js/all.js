@@ -10,7 +10,8 @@ const App = Vue.createApp({
       axios.post(`${this.url}/admin/signin`, this.userInfo).then(res => {
         const token = res.data.token;
         const expired = res.data.expired;
-        document.cookie = `hexToken=${token}; expires=${new Date(expired)};`;
+        // 登入與登出屬性必須一致，才能更新。
+        document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
         this.userInfo = {}
         if (res.data.success === true) {
           window.location.assign('./manage.html');
