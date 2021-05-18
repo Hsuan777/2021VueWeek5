@@ -37,23 +37,13 @@ const App = Vue.createApp({
       })
     },
     addProduct() {
-      this.tempData.product = {
+      let productObj = {
         data: {
-          title: "[賣]動物園造型衣服3", 
-          category: "衣服2",
-          origin_price: 100,
-          price: 300,
-          unit: "個",
-          description: "Sit down please 名設計師設計",
-          content: "這是內容",
-          is_enabled: 0,
-          imageUrl : "主圖網址",
-          imagesUrl: [
-            "圖片網址一",
-          ]
+          ...this.tempData.product
         }
       }
-      axios.post(`${this.url}/api/${this.path}/admin/product`, this.tempData.product).then(res => {
+      console.log(productObj);
+      axios.post(`${this.url}/api/${this.path}/admin/product`, productObj).then(res => {
         console.log(res.data);
         this.getProduct()
       })
