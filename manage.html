@@ -32,16 +32,16 @@
         </div>
         <input type="button" value="Update" class="btn btn-primary" @click="checkLogin">
       </div>
-      <!-- 項目列表 -->
       <div class="d-flex align-items-center">
         <h2>項目列表</h2>
-        <!-- <input type="button" :value="'新增' + selectTabName" class="btn btn-primary ms-auto" @click="addProduct"> -->
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#exampleModal" v-if="selectTabName !== '訂單'">
+        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" v-if="selectTabName !== '訂單'">
           {{'新增' + selectTabName}}  
         </button>
       </div>
+      <!-- 項目列表 -->
       <div class="card text-center">
+        <!-- 功能頁籤與搜尋欄 -->
         <div class="card-header d-flex align-items-end">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item" v-for:="item in tabList" :key="item" @click="selectTab(item)">
@@ -127,7 +127,39 @@
                   <td>
                     <div class="d-flex">
                       <input type="button" value="修改" class="btn btn-warning me-2">
-                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteProduct(item.id)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteOrder(item.id)">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+        <!-- 優惠券樣板 -->
+        <template v-if="displayData.coupons">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>優惠券名稱</th>
+                  <th>優惠券代碼</th>
+                  <th>折扣率</th>
+                  <th>期限</th>
+                  <th>是否啟用</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in originData.coupons" :key="item.id">
+                  <td>{{item.title}}</td>
+                  <td>{{item.code}}</td>
+                  <td>{{item.percent}}</td>
+                  <td>{{item.due_date}}</td>
+                  <td>{{item.is_enabled}}</td>
+                  <td>
+                    <div class="d-flex">
+                      <input type="button" value="修改" class="btn btn-warning me-2">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteCoupon(item.id)">
                     </div>
                   </td>
                 </tr>
@@ -138,7 +170,8 @@
       </div>
     </section>
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- 新增產品 -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -186,6 +219,54 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" @click="addProduct">新增</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 新增優惠券 -->
+    <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">新增優惠券</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="couponName" class="form-label">名稱</label>
+                  <input type="text" id="couponName" class="form-control" placeholder="優惠券名稱" v-model="tempData.coupon.title">
+                </div>
+                <div class="col">
+                  <label for="couponPercent" class="form-label">折扣率</label>
+                  <input type="number" id="couponPercent" class="form-control" placeholder="80 為 8 折" v-model.number="tempData.coupon.percent">
+                </div>
+                <div class="col">
+                  <label for="couponCode" class="form-label">代碼</label>
+                  <input type="text" id="couponCode" class="form-control" placeholder="英數較佳 e.g. VS777" v-model="tempData.coupon.code">
+                </div>
+                <div class="col-12">
+                  <label for="couponPercent" class="form-label me-2">期限</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" v-model.number="tempData.coupon.due_date">
+                    <label class="form-check-label" for="inlineRadio1">1天</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="3" v-model.number="tempData.coupon.due_date">
+                    <label class="form-check-label" for="inlineRadio2">3天</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="7" v-model.number="tempData.coupon.due_date">
+                    <label class="form-check-label" for="inlineRadio3">7天</label>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" @click="addCoupon">新增</button>
           </div>
         </div>
       </div>
