@@ -71,17 +71,44 @@ const App = Vue.createApp({
       couponObj.data['is_enabled'] = 0
       axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
         if (res.data.success) {
+          this.tempData.coupon = {};
           this.getCoupon();
         } else {
           console.log(res.data.message);
         }
       })
     },
+    putCoupon(itemId) {
+      let couponObj = {
+        data: {
+          ...this.tempData.coupon
+        }
+      }
+      axios.put(`${this.url}/api/${this.path}/admin/coupon/${itemId}`, couponObj).then(res => {
+        if (res.data.success) {
+          this.getCoupon();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+
+    },
     deleteProduct(itemId) {
-      console.log(itemId);
       axios.delete(`${this.url}/api/${this.path}/admin/product/${itemId}`).then(res => {
-        console.log(res.data);
-        this.getProduct();
+        if (res.data.success) {
+          this.getProduct();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+    },
+    deleteCoupon(itemId) {
+      axios.delete(`${this.url}/api/${this.path}/admin/coupon/${itemId}`).then(res => {
+        if (res.data.success) {
+          this.getCoupon();
+        } else {
+          console.log(res.data.message);
+        }
       })
     },
     selectTab(item) {
