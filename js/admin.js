@@ -1,4 +1,3 @@
-
 const App = Vue.createApp({
   data() {
     return {
@@ -16,11 +15,16 @@ const App = Vue.createApp({
       selectTabNameEn: 'product',
       originData: {
         products: [],
-        orders: []
+        orders: [],
+        coupons: [],
+        articles: [],
       },
       tempData: {
         product: {},
-        coupon: {}
+        coupon: {},
+        article: {
+          tag:[],
+        }
       }
     };
   },
@@ -40,6 +44,12 @@ const App = Vue.createApp({
     getCoupon(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/coupons?page=${page}`,).then(res => {
         this.originData.coupons = res.data.coupons;
+      })
+    },
+    getArticle(page = 1) {
+      axios.get(`${this.url}/api/${this.path}/admin/articles?page=${page}`,).then(res => {
+        console.log(res.data.articles);
+        this.originData.articles = res.data.articles;
       })
     },
     addProduct() {
@@ -78,8 +88,26 @@ const App = Vue.createApp({
         }
       })
     },
+    addArticle() {
+      let date = new Date();
+      let articleObj = {
+        data: {
+          ...this.tempData.article
+        }
+      }
+      articleObj.data.create_at = date.getTime()
+      articleObj.data.isPublic = false
+      axios.post(`${this.url}/api/${this.path}/admin/article`, articleObj).then(res => {
+        if (res.data.success) {
+          this.tempData.article = {};
+          this.getArticle();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+    },
     putProduct(item, action) {
-      let couponObj = {
+      let productObj = {
         data: {
           ...item
         }
@@ -89,9 +117,27 @@ const App = Vue.createApp({
       } else {
         couponObj.data.is_enabled = 0
       }
-      axios.put(`${this.url}/api/${this.path}/admin/product/${couponObj.data.id}`, couponObj).then(res => {
+      axios.put(`${this.url}/api/${this.path}/admin/product/${couponObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
           this.getProduct();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+    },
+    putOrder(item, action) {
+      console.log(item);
+      let orderObj = {
+        data: {
+          ...item
+        }
+      }
+      if (action === 'isPaid') {
+        orderObj.data.is_paid = !orderObj.data.is_paid
+      }
+      axios.put(`${this.url}/api/${this.path}/admin/order/${orderObj.data.id}`, orderObj).then(res => {
+        if (res.data.success) {
+          this.getOrder();
         } else {
           console.log(res.data.message);
         }
@@ -109,6 +155,25 @@ const App = Vue.createApp({
         couponObj.data.is_enabled = 0
       }
       axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
+        if (res.data.success) {
+          this.getCoupon();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+    },
+    putArticle(item, action) {
+      let articleObj = {
+        data: {
+          ...item
+        }
+      }
+      if (action === 'isPublic' && articleObj.data.is_enabled === 0) {
+        articleObj.data.is_enabled = 1
+      } else {
+        articleObj.data.is_enabled = 0
+      }
+      axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
           this.getCoupon();
         } else {
@@ -143,6 +208,7 @@ const App = Vue.createApp({
             this.displayData.products = true
             this.displayData.orders = false
             this.displayData.coupons = false
+            this.displayData.articles = false
             this.getProduct()
             break;
           case '訂單':
@@ -150,6 +216,7 @@ const App = Vue.createApp({
             this.displayData.products = false
             this.displayData.orders = true
             this.displayData.coupons = false
+            this.displayData.articles = false
             this.getOrder()
             break;
           case '優惠券':
@@ -158,11 +225,17 @@ const App = Vue.createApp({
             this.displayData.products = false
             this.displayData.orders = false
             this.displayData.coupons = true
+            this.displayData.articles = false
             this.getCoupon()
             break;
           case '文章':
             this.selectTabName = item
             this.selectTabNameEn = 'article'
+            this.displayData.products = false
+            this.displayData.orders = false
+            this.displayData.coupons = false
+            this.displayData.articles = true
+            this.getArticle()
             break;
         }
       }
