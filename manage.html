@@ -82,14 +82,16 @@
                   <td>{{item.price}}</td>
                   <td class="align-middle">
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="${item.id}" :checked="item.is_enabled">
-                      <label class="form-check-label" for="${item.id}">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
+                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @click="putProduct(item, 'isEnabled')">
+                      <label class="form-check-label" :for="item.id">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
                     </div>
                   </td>
                   <td>
                     <div class="d-flex">
-                      <input type="button" value="修改" class="btn btn-warning me-2" >
-                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteProduct(item.id)">
+                      <button type="button" class="btn btn-warning me-2" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.product = {...item}">
+                        修改  
+                      </button>
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteProduct(item.id)">
                     </div>
                   </td>
                 </tr>
@@ -157,16 +159,16 @@
                   <td>{{item.due_date}}</td>
                   <td>
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="${item.id}" :checked="item.is_enabled" @click="putCoupon(item, 'isEnabled')">
-                      <label class="form-check-label" for="${item.id}">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
+                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @click="putCoupon(item, 'isEnabled')">
+                      <label class="form-check-label" :for="item.id">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
                     </div>
                   </td>
                   <td>
                     <div class="d-flex">
-                      <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = {...item}">
+                      <button type="button" class="btn btn-warning me-2" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = {...item}">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteCoupon(item.id)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteCoupon(item.id)">
                     </div>
                   </td>
                 </tr>
@@ -177,7 +179,7 @@
       </div>
     </section>
     <!-- Modal -->
-    <!-- 新增產品 -->
+    <!-- add/edit 產品 -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -225,12 +227,13 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct">新增</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct" v-if="tempData.product.id === undefined">新增</button>
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="putProduct(tempData.product)" v-else>修改</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- 新增優惠券 -->
+    <!-- add/edit 優惠券 -->
     <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
