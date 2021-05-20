@@ -78,20 +78,24 @@ const App = Vue.createApp({
         }
       })
     },
-    putCoupon(itemId) {
+    putCoupon(item, action) {
       let couponObj = {
         data: {
-          ...this.tempData.coupon
+          ...item
         }
       }
-      axios.put(`${this.url}/api/${this.path}/admin/coupon/${itemId}`, couponObj).then(res => {
+      if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
+        couponObj.data.is_enabled = 1
+      } else {
+        couponObj.data.is_enabled = 0
+      }
+      axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
         if (res.data.success) {
           this.getCoupon();
         } else {
           console.log(res.data.message);
         }
       })
-
     },
     deleteProduct(itemId) {
       axios.delete(`${this.url}/api/${this.path}/admin/product/${itemId}`).then(res => {

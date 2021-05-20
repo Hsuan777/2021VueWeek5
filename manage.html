@@ -155,11 +155,15 @@
                   <td>{{item.code}}</td>
                   <td>{{item.percent}}</td>
                   <td>{{item.due_date}}</td>
-                  <td>{{item.is_enabled}}</td>
+                  <td>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="${item.id}" :checked="item.is_enabled" @click="putCoupon(item, 'isEnabled')">
+                      <label class="form-check-label" for="${item.id}">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
+                    </div>
+                  </td>
                   <td>
                     <div class="d-flex">
-                      <!-- <input type="button" value="修改" class="btn btn-warning me-2"> -->
-                      <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = item">
+                      <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteCoupon(item.id)">
@@ -269,8 +273,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addCoupon" v-if="tempData.coupon === {}">新增</button>
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="putCoupon" v-else>修改</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addCoupon" v-if="tempData.coupon.id === undefined">新增</button>
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="putCoupon(tempData.coupon)" v-else>修改</button>
           </div>
         </div>
       </div>
