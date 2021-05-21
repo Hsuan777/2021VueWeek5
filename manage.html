@@ -24,14 +24,6 @@
     </nav>  
     <!-- 列表 -->
     <section class="container mt-5" v-if="hasLogin">
-      <!-- 使用者路徑 -->
-      <div class="input-group mb-3">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="userPath" placeholder="API 路徑" v-model="path">
-          <label for="userPath">使用者路徑</label>
-        </div>
-        <input type="button" value="Update" class="btn btn-primary" @click="checkLogin">
-      </div>
       <div class="d-flex align-items-center">
         <h2>項目列表</h2>
         <!-- Button trigger modal -->
@@ -60,7 +52,7 @@
             </datalist>
           </div>
         </div>
-        <!-- 商品樣板 -->
+        <!-- 商品列表 -->
         <template v-if="displayData.products">
           <div class="card-body">
             <table class="table">
@@ -75,7 +67,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in originData.products" :key="item.id">
+                <tr v-for="item in originData.products" :key="item.id" :class="{'table-success': item.is_enabled}">
                   <td>{{item.category}}</td>
                   <td>{{item.title}}</td>
                   <td>{{item.description}}</td>
@@ -99,7 +91,7 @@
             </table>
           </div>
         </template>
-        <!-- 訂單樣板 -->
+        <!-- 訂單列表 -->
         <template v-if="displayData.orders">
           <div class="card-body">
             <table class="table">
@@ -116,7 +108,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in originData.orders" :key="item.id">
+                <tr v-for="item in originData.orders" :key="item.id" :class="{'table-success': item.is_paid}">
                   <td>{{item.user.name}}</td>
                   <td>{{item.user.email}}</td>
                   <td>{{item.user.tel}}</td>
@@ -143,7 +135,7 @@
             </table>
           </div>
         </template>
-        <!-- 優惠券樣板 -->
+        <!-- 優惠券列表 -->
         <template v-if="displayData.coupons">
           <div class="card-body">
             <table class="table">
@@ -158,7 +150,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in originData.coupons" :key="item.id">
+                <tr v-for="item in originData.coupons" :key="item.id" :class="{'table-success': item.is_enabled}">
                   <td>{{item.title}}</td>
                   <td>{{item.code}}</td>
                   <td>{{item.percent}}</td>
@@ -182,7 +174,7 @@
             </table>
           </div>
         </template>
-        <!-- 文章樣板 -->
+        <!-- 文章列表 -->
         <template v-if="displayData.articles">
           <div class="card-body">
             <table class="table">
@@ -197,10 +189,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in originData.articles" :key="item.create_at">
+                <tr v-for="item in originData.articles" :key="item.create_at" :class="{'table-success': item.isPublic}">
                   <td>{{item.title}}</td>
                   <td>{{item.description}}</td>
-                  <td>{{item.content}}</td>
+                  <td v-html="item.content"></td>
                   <td>{{item.author}}</td>
                   <td>
                     <div class="form-check form-switch">
@@ -213,7 +205,36 @@
                       <button type="button" class="btn btn-warning me-2" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.article = {...item}">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteCoupon(item.id)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteArticle(item.id)">
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+        <!-- 圖檔列表 -->
+        <template v-if="displayData.images">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>預覽</th>
+                  <th>網址</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in originData.images">
+                  <!-- <td>{{item.title}}</td>
+                  <td>{{item.description}}</td> -->
+                  
+                  <td>
+                    <div class="d-flex">
+                      <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'">
+                        修改  
+                      </button>
+                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteImage(item.id)">
                     </div>
                   </td>
                 </tr>
@@ -228,8 +249,9 @@
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">新增商品</h5>
+          <div class="modal-header bg-secondary">
+            <h5 class="modal-title text-white" id="productModalLabel" v-if="tempData.product.id === undefined">新增商品</h5>
+            <h5 class="modal-title text-warning" id="productModalLabel" v-else>修改商品</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -267,6 +289,10 @@
                   <label for="productImageUrl" class="form-label">主圖網址</label>
                   <input type="text" id="productImageUrl " class="form-control" placeholder="網址" v-model="tempData.product.imageUrl ">
                 </div>
+                <div class="col">
+                  <label for="" class="form-label">主圖</label>
+                  <img class="img-thumbnail" :src="tempData.product.imageUrl" :alt="tempData.product.title">
+                </div>
               </div>
             </form>
           </div>
@@ -279,11 +305,11 @@
       </div>
     </div>
     <!-- add/edit 優惠券 -->
-    <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">新增優惠券</h5>
+            <h5 class="modal-title" id="couponModalLabel">新增優惠券</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -348,11 +374,11 @@
                 </div>
                 <div class="col-12">
                   <label for="articleContent" class="form-label">內容</label>
-                  <input type="text" id="couponContent" class="form-control" placeholder="文章內容" v-model="tempData.article.content">
+                  <textarea id="articleContent" rows="3" class="form-control" placeholder="文章內容" v-model="tempData.article.content"></textarea>
                 </div>
                 <div class="col-12">
                   <label for="articleTag" class="form-label">Tag</label>
-                  <input type="text" id="couponTag" class="form-control" placeholder="標籤" v-model="tempData.article.tag">
+                  <input type="text" id="articleTag" class="form-control" placeholder="標籤" v-model="tempData.article.tag">
                 </div>
                 <div class="col-12">
                   <label for="articleAuthor" class="form-label">作者</label>
@@ -365,6 +391,34 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addArticle" v-if="tempData.article.id === undefined">新增</button>
             <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="putArticle(tempData.article)" v-else>修改</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- add/edit 圖檔 -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imageModalLabel">新增圖檔</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="imageTitle" class="form-label">請選擇上傳圖片</label>
+                  <input type="file" id="imageTitle" class="form-control" placeholder="圖片網址" accept="image/png, image/jpeg, image/gif" ref="uploadImage">
+                </div>
+                <div class="col-12">
+                  <img :src="tempData.image" alt="">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addImage">新增</button>
           </div>
         </div>
       </div>

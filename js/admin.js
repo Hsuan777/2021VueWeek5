@@ -10,7 +10,7 @@ const App = Vue.createApp({
         orders: false,
         coupons: false
       },
-      tabList: ['商品', '訂單', '優惠券', '文章'],
+      tabList: ['商品', '訂單', '優惠券', '文章', '圖檔'],
       selectTabName: '商品',
       selectTabNameEn: 'product',
       originData: {
@@ -18,13 +18,14 @@ const App = Vue.createApp({
         orders: [],
         coupons: [],
         articles: [],
+        images: [],
       },
       tempData: {
         product: {},
         coupon: {},
         article: {
           tag:[],
-        }
+        },
       }
     };
   },
@@ -66,6 +67,17 @@ const App = Vue.createApp({
       axios.get(`${this.url}/api/${this.path}/admin/articles?page=${page}`,).then(res => {
         if (res.data.success) {
           this.originData.articles = res.data.articles;
+        } else {
+          console.log(res.data.message);
+        }
+      }).catch(res => {
+        console.log(res.data);
+      })
+    },
+    getImage(page = 1) {
+      axios.get(`${this.url}/api/${this.path}/admin/upload`,).then(res => {
+        if (res.data.success) {
+          this.originData.images = res.data.articles;
         } else {
           console.log(res.data.message);
         }
@@ -127,18 +139,31 @@ const App = Vue.createApp({
         }
       })
     },
+    addImage() {
+      let tempImageFile = this.$refs.uploadImage.files[0]
+      console.log(tempImageFile);
+      const formData = new FormData()
+      formData.append('file', tempImageFile)
+      axios.post(`${this.url}/api/${this.path}/admin/upload`, formData).then(res => {
+        if (res.data.success) {
+          this.getImage();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+    },
     putProduct(item, action) {
       let productObj = {
         data: {
           ...item
         }
       }
-      if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
-        couponObj.data.is_enabled = 1
+      if (action === 'isEnabled' && productObj.data.is_enabled === 0) {
+        productObj.data.is_enabled = 1
       } else {
-        couponObj.data.is_enabled = 0
+        productObj.data.is_enabled = 0
       }
-      axios.put(`${this.url}/api/${this.path}/admin/product/${couponObj.data.id}`, productObj).then(res => {
+      axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
           this.getProduct();
         } else {
@@ -147,7 +172,6 @@ const App = Vue.createApp({
       })
     },
     putOrder(item, action) {
-      console.log(item);
       let orderObj = {
         data: {
           ...item
@@ -196,7 +220,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
-          this.getCoupon();
+          this.getArticle();
         } else {
           console.log(res.data.message);
         }
@@ -220,6 +244,15 @@ const App = Vue.createApp({
         }
       })
     },
+    deleteArticle(itemId) {
+      axios.delete(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
+        if (res.data.success) {
+          this.getArticle();
+        } else {
+          console.log(res.data.message);
+        }
+      })
+    },
     selectTab(item) {
       if (item !== this.selectTabName) {
         switch (item) {
@@ -230,6 +263,7 @@ const App = Vue.createApp({
             this.displayData.orders = false
             this.displayData.coupons = false
             this.displayData.articles = false
+            this.displayData.images = false
             this.getProduct()
             break;
           case '訂單':
@@ -238,6 +272,7 @@ const App = Vue.createApp({
             this.displayData.orders = true
             this.displayData.coupons = false
             this.displayData.articles = false
+            this.displayData.images = false
             this.getOrder()
             break;
           case '優惠券':
@@ -247,6 +282,7 @@ const App = Vue.createApp({
             this.displayData.orders = false
             this.displayData.coupons = true
             this.displayData.articles = false
+            this.displayData.images = false
             this.getCoupon()
             break;
           case '文章':
@@ -256,7 +292,18 @@ const App = Vue.createApp({
             this.displayData.orders = false
             this.displayData.coupons = false
             this.displayData.articles = true
+            this.displayData.images = false
             this.getArticle()
+            break;
+          case '圖檔':
+            this.selectTabName = item
+            this.selectTabNameEn = 'image'
+            this.displayData.products = false
+            this.displayData.orders = false
+            this.displayData.coupons = false
+            this.displayData.articles = false
+            this.displayData.images = true
+            // this.getImage()
             break;
         }
       }
