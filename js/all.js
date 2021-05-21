@@ -8,8 +8,7 @@ const App = Vue.createApp({
   methods: {
     signIn() {
       axios.post(`${this.url}/admin/signin`, this.userInfo).then(res => {
-        const token = res.data.token;
-        const expired = res.data.expired;
+        const {token, expired} = res.data
         // 登入與登出屬性必須一致，才能更新。
         document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
         this.userInfo = {}
