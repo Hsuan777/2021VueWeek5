@@ -31,25 +31,46 @@ const App = Vue.createApp({
   methods: {
     getProduct(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/products?page=${page}`).then(res => {
-        this.originData.products = res.data.products;
+        if (res.data.success) {
+          this.originData.products = res.data.products;
+        } else {
+          console.log(res.data.message);
+        }
       }).catch(res => {
-        console.log(res);
+        console.log(res.data);
       })
     },
     getOrder(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/orders?page=${page}`,).then(res => {
-        this.originData.orders = res.data.orders;
+        if (res.data.success) {
+          this.originData.orders = res.data.orders;
+        } else {
+          console.log(res.data.message);
+        }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     getCoupon(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/coupons?page=${page}`,).then(res => {
-        this.originData.coupons = res.data.coupons;
+        if (res.data.success) {
+          this.originData.coupons = res.data.coupons;
+        } else {
+          console.log(res.data.message);
+        }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     getArticle(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/articles?page=${page}`,).then(res => {
-        console.log(res.data.articles);
-        this.originData.articles = res.data.articles;
+        if (res.data.success) {
+          this.originData.articles = res.data.articles;
+        } else {
+          console.log(res.data.message);
+        }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     addProduct() {
