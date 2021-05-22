@@ -79,8 +79,8 @@
                     </div>
                   </td>
                   <td>
-                    <div class="d-flex">
-                      <button type="button" class="btn btn-warning me-2" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.product = {...item}">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.product = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteProduct(item.id)">
@@ -126,7 +126,8 @@
                     </div>
                   </td>
                   <td>
-                    <div class="d-flex">
+                    <div class="btn-group">
+                      <!-- 能修改金額，不過有更好的方式？ -->
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': !item.is_paid}" @click="deleteOrder(item.id)">
                     </div>
                   </td>
@@ -162,8 +163,8 @@
                     </div>
                   </td>
                   <td>
-                    <div class="d-flex">
-                      <button type="button" class="btn btn-warning me-2" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = {...item}">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteCoupon(item.id)">
@@ -201,8 +202,8 @@
                     </div>
                   </td>
                   <td>
-                    <div class="d-flex">
-                      <button type="button" class="btn btn-warning me-2" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.article = {...item}">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.article = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteArticle(item.id)">
@@ -231,7 +232,7 @@
                   
                   <td>
                     <div class="d-flex">
-                      <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'">
+                      <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteImage(item.id)">
@@ -247,7 +248,7 @@
     <!-- Modal -->
     <!-- add/edit 產品 -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header bg-secondary">
             <h5 class="modal-title text-white" id="productModalLabel" v-if="tempData.product.id === undefined">新增商品</h5>
@@ -267,7 +268,7 @@
                 </div>
                 <div class="col-12">
                   <label for="productContent" class="form-label">內容</label>
-                  <input type="text" id="productContent" class="form-control" placeholder="商品內容" v-model="tempData.product.content">
+                  <textarea type="text" rows="3" id="productContent" class="form-control" placeholder="商品內容" v-model="tempData.product.content"></textarea>
                 </div>
                 <div class="col">
                   <label for="productOriginPrice" class="form-label">定價</label>
@@ -286,13 +287,31 @@
                   <input type="text" id="productUnit" class="form-control" placeholder="單位" v-model="tempData.product.unit">
                 </div>
                 <div class="col-12">
-                  <label for="productImageUrl" class="form-label">主圖網址</label>
-                  <input type="text" id="productImageUrl " class="form-control" placeholder="網址" v-model="tempData.product.imageUrl ">
+                  <div class="d-flex align-items-center mb-2">
+                    <label for="productImageUrl" class="form-label mb-0">主圖網址</label>
+                    <input type="button" class="btn btn-primary btn-sm ms-2" value="Add" @click="addProductImage">
+                  </div>
+                  <input type="text" id="productImageUrl" class="form-control mb-3" placeholder="網址" v-model="tempData.product.imageUrl">
+                  <!-- 額外圖片增減 -->
+                  <template v-for="(item, i) in tempData.product.imagesUrl" :key="'productImageUrl' + i">
+                    <label :for="'productImageUrl' + i" class="form-label">其他圖片網址 {{i + 1}}</label>
+                    <div class="input-group mb-3">
+                      <input type="text" :id="'productImageUrl' + item" class="form-control" placeholder="網址" v-model="tempData.product.imagesUrl[i]">
+                      <button type="button" class="btn btn-outline-secondary" @click="tempData.product.imagesUrl.splice(i, 1)">Ｘ</button>
+                    </div>
+                  </template>
                 </div>
-                <div class="col">
+                <div class="col-4">
                   <label for="" class="form-label">主圖</label>
                   <img class="img-thumbnail" :src="tempData.product.imageUrl" :alt="tempData.product.title">
                 </div>
+                <!-- 其他圖片預覽 -->
+                <template v-if="tempData.product.imagesUrl">
+                  <div class="col-4" v-for="(item, key) in tempData.product.imagesUrl" :key="item">
+                    <label for="" class="form-label">其他圖片 {{key + 1}}</label>
+                    <img class="img-thumbnail" :src="tempData.product.imagesUrl[key]" :alt="tempData.product.title + (key+1)｀">
+                  </div>
+                </template>
               </div>
             </form>
           </div>

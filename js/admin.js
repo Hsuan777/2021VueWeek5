@@ -21,11 +21,15 @@ const App = Vue.createApp({
         images: [],
       },
       tempData: {
-        product: {},
+        product: {
+          images: []
+        },
         coupon: {},
         article: {
           tag:[],
         },
+        imagesUrl:[],
+        tag: [] 
       }
     };
   },
@@ -328,6 +332,14 @@ const App = Vue.createApp({
         }
       })
     },
+    addProductImage() {
+      if (!this.tempData.product.imagesUrl) {
+        this.tempData.product.imagesUrl = [];
+        this.tempData.product.imagesUrl.push('');
+      } else {
+        this.tempData.product.imagesUrl.push('');
+      }
+    }
   },
   created() {
     this.checkLogin();
