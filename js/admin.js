@@ -34,7 +34,7 @@ const App = Vue.createApp({
     };
   },
   methods: {
-    getProduct(page = 1) {
+    getProducts(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/products?page=${page}`).then(res => {
         if (res.data.success) {
           this.originData.products = res.data.products;
@@ -45,7 +45,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    getOrder(page = 1) {
+    getOrders(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/orders?page=${page}`,).then(res => {
         if (res.data.success) {
           this.originData.orders = res.data.orders;
@@ -56,7 +56,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    getCoupon(page = 1) {
+    getCoupons(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/coupons?page=${page}`,).then(res => {
         if (res.data.success) {
           this.originData.coupons = res.data.coupons;
@@ -67,7 +67,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    getArticle(page = 1) {
+    getArticles(page = 1) {
       axios.get(`${this.url}/api/${this.path}/admin/articles?page=${page}`,).then(res => {
         if (res.data.success) {
           this.originData.articles = res.data.articles;
@@ -86,7 +86,7 @@ const App = Vue.createApp({
       }
       axios.post(`${this.url}/api/${this.path}/admin/product`, productObj).then(res => {
         if (res.data.success) {
-          this.getProduct();
+          this.getProducts();
         } else {
           console.log(res.data.message);
         }
@@ -110,7 +110,7 @@ const App = Vue.createApp({
       axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
         if (res.data.success) {
           this.tempData.coupon = {};
-          this.getCoupon();
+          this.getCoupons();
         } else {
           console.log(res.data.message);
         }
@@ -130,7 +130,7 @@ const App = Vue.createApp({
       axios.post(`${this.url}/api/${this.path}/admin/article`, articleObj).then(res => {
         if (res.data.success) {
           this.tempData.article = {};
-          this.getArticle();
+          this.getArticles();
         } else {
           console.log(res.data.message);
         }
@@ -166,7 +166,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
-          this.getProduct();
+          this.getProducts();
         } else {
           console.log(res.data.message);
         }
@@ -185,7 +185,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/order/${orderObj.data.id}`, orderObj).then(res => {
         if (res.data.success) {
-          this.getOrder();
+          this.getOrders();
         } else {
           console.log(res.data.message);
         }
@@ -206,7 +206,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
         if (res.data.success) {
-          this.getCoupon();
+          this.getCoupons();
         } else {
           console.log(res.data.message);
         }
@@ -227,7 +227,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
-          this.getArticle();
+          this.getArticles();
         } else {
           console.log(res.data.message);
         }
@@ -238,7 +238,7 @@ const App = Vue.createApp({
     deleteProduct(itemId) {
       axios.delete(`${this.url}/api/${this.path}/admin/product/${itemId}`).then(res => {
         if (res.data.success) {
-          this.getProduct();
+          this.getProducts();
         } else {
           console.log(res.data.message);
         }
@@ -249,7 +249,7 @@ const App = Vue.createApp({
     deleteCoupon(itemId) {
       axios.delete(`${this.url}/api/${this.path}/admin/coupon/${itemId}`).then(res => {
         if (res.data.success) {
-          this.getCoupon();
+          this.getCoupons();
         } else {
           console.log(res.data.message);
         }
@@ -260,7 +260,7 @@ const App = Vue.createApp({
     deleteArticle(itemId) {
       axios.delete(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
         if (res.data.success) {
-          this.getArticle();
+          this.getArticles();
         } else {
           console.log(res.data.message);
         }
@@ -279,7 +279,7 @@ const App = Vue.createApp({
             this.displayData.coupons = false;
             this.displayData.articles = false;
             this.displayData.images = false;
-            this.getProduct()
+            this.getProducts()
             break;
           case '訂單':
             this.currentTab.name = item;
@@ -288,7 +288,7 @@ const App = Vue.createApp({
             this.displayData.coupons = false;
             this.displayData.articles = false;
             this.displayData.images = false;
-            this.getOrder()
+            this.getOrders()
             break;
           case '優惠券':
             this.currentTab.name = item;
@@ -298,7 +298,7 @@ const App = Vue.createApp({
             this.displayData.coupons = true;
             this.displayData.articles = false;
             this.displayData.images = false;
-            this.getCoupon()
+            this.getCoupons()
             break;
           case '文章':
             this.currentTab.name = item;
@@ -308,7 +308,7 @@ const App = Vue.createApp({
             this.displayData.coupons = false;
             this.displayData.articles = true;
             this.displayData.images = false;
-            this.getArticle()
+            this.getArticles()
             break;
           case '圖檔':
             this.currentTab.name = item;
@@ -341,7 +341,7 @@ const App = Vue.createApp({
       axios.post(`${this.url}/api/user/check`).then(res => {
         if (res.data.success) {
           this.hasLogin = true;
-          this.getProduct();
+          this.getProducts();
         } else {
           window.location.replace('./index.html');
           console.log(res.data.message);
