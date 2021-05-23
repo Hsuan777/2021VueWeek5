@@ -28,8 +28,6 @@ const App = Vue.createApp({
         article: {
           tag:[],
         },
-        imagesUrl:[],
-        tag: [] 
       }
     };
   },
@@ -116,10 +114,12 @@ const App = Vue.createApp({
         }
       }
       const setDueDate = (num) => {
-        date.setDate(num);
+        // setDate 會變更現在日期，例如當月 23 號，setDate(30)，會變成當月 30 號
+        date.setDate(date.getDate() + num);
         couponObj.data['due_date'] = date.getTime();
       }
-      setDueDate(couponObj.data['due_date']);
+      // 暫時設定往後 30 天，之後改成可選日期
+      setDueDate(30);
       couponObj.data['is_enabled'] = 0;
       axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
         if (res.data.success) {
@@ -367,6 +367,14 @@ const App = Vue.createApp({
         this.tempData.product.imagesUrl.push('');
       } else {
         this.tempData.product.imagesUrl.push('');
+      }
+    },
+    addArticleTag() {
+      if (!this.tempData.article.tag) {
+        this.tempData.article.tag = [];
+        this.tempData.article.tag.push('');
+      } else {
+        this.tempData.article.tag.push('');
       }
     }
   },
