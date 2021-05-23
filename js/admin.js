@@ -78,6 +78,20 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    getArticle(itemId, action) {
+      axios.get(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
+        if (res.data.success) {
+          this.tempData.article = res.data.article;
+          if (action === 'isPublic') {
+            this.putArticle(res.data.article, action);
+          }
+        } else {
+          console.log(res.data.message);
+        }
+      }).catch(res => {
+        console.log(res.data);
+      })
+    },
     addProduct() {
       let productObj = {
         data: {
@@ -140,7 +154,6 @@ const App = Vue.createApp({
     },
     addImageToUpload() {
       let tempImageFile = this.$refs.uploadImage.files[0]
-      console.log(tempImageFile);
       const formData = new FormData();
       formData.append('file', tempImageFile);
       axios.post(`${this.url}/api/${this.path}/admin/upload`, formData).then(res => {
@@ -220,11 +233,9 @@ const App = Vue.createApp({
           ...item
         }
       }
-      if (action === 'isPublic' && articleObj.data.is_enabled === 0) {
-        articleObj.data.is_enabled = 1;
-      } else {
-        articleObj.data.is_enabled = 0;
-      }
+      if (action === 'isPublic') {
+        articleObj.data.isPublic = !articleObj.data.isPublic;
+      } 
       axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
           this.getArticles();

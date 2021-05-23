@@ -199,13 +199,13 @@
                   <td>{{item.author}}</td>
                   <td>
                     <div class="form-check form-switch d-flex justify-content-center">
-                      <input class="form-check-input me-2" type="checkbox" :id="item.id" :checked="item.isPublic" @click="putArticle(item, 'isPublic')">
+                      <input class="form-check-input me-2" type="checkbox" :id="item.id" :checked="item.isPublic" @click="getArticle(item.id, 'isPublic')">
                       <label class="form-check-label" :for="item.id">{{item.isPublic ? '已啟用' : '未啟用'}}</label>
                     </div>
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="tempData.article = {...item}">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="getArticle(item.id)">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteArticle(item.id)">
