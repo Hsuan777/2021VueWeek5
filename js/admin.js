@@ -11,7 +11,7 @@ const App = Vue.createApp({
       tabList: ['商品', '訂單', '優惠券', '文章', '圖檔'],
       currentTab: {
         name: '商品',
-        enName:'prduct'
+        enName:'product'
       },
       originData: {
         products: [],
