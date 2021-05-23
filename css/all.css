@@ -11301,4 +11301,8 @@ fieldset:disabled .btn {
     display: none !important;
   }
 }
+
+td {
+  vertical-align: middle;
+}
 /*# sourceMappingURL=all.css.map */

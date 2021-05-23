@@ -27,8 +27,8 @@
       <div class="d-flex align-items-center">
         <h2>項目列表</h2>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" v-if="selectTabName !== '訂單'" @click="tempData[selectTabNameEn] = {}">
-          {{'新增' + selectTabName}}
+        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" v-if="currentTab.name !== '訂單'" @click="tempData[currentTab.enName] = {}">
+          {{'新增' + currentTab.name}}
         </button>
       </div>
       <!-- 項目列表 -->
@@ -37,12 +37,12 @@
         <div class="card-header d-flex align-items-end">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item" v-for:="item in tabList" :key="item" @click="selectTab(item)">
-              <a class="nav-link" :class="{'active': item === selectTabName }">{{item}}</a>
+              <a class="nav-link" :class="{'active': item === currentTab.name }">{{item}}</a>
             </li>
           </ul>
           <div class="form-floating ms-auto">
             <input class="form-control" list="datalistOptions" id="searchData" placeholder="Type to search...">
-            <label for="searchData">搜尋{{selectTabName}}...</label>
+            <label for="searchData">搜尋{{currentTab.name}}...</label>
             <datalist id="datalistOptions">
               <option value="San Francisco">
               <option value="New York">
@@ -59,6 +59,7 @@
               <thead>
                 <tr>
                   <th>分類</th>
+                  <th>商品縮圖</th>
                   <th>標題</th>
                   <th>描述</th>
                   <th>售價</th>
@@ -69,8 +70,11 @@
               <tbody>
                 <tr v-for="item in originData.products" :key="item.id" :class="{'table-success': item.is_enabled}">
                   <td>{{item.category}}</td>
+                  <td>
+                    <img :src="item.imageUrl" :alt="item.title" style="width: 100px;" class="img-thumbnail">
+                  </td>
                   <td>{{item.title}}</td>
-                  <td>{{item.description}}</td>
+                  <td class="text-start">{{item.description}}</td>
                   <td>{{item.price}}</td>
                   <td class="align-middle">
                     <div class="form-check form-switch">
@@ -80,7 +84,7 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.product = {...item}">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="tempData.product = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteProduct(item.id)">
@@ -114,7 +118,7 @@
                   <td>{{item.user.tel}}</td>
                   <td>{{item.user.address}}</td>
                   <td>
-                    <p v-for="item in item.products" :key="item.product.id">
+                    <p v-for="item in item.products" :key="item.product.id" class="mb-0">
                       {{item.product.title}}
                     </p>
                   </td>
@@ -164,7 +168,7 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.coupon = {...item}">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="tempData.coupon = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteCoupon(item.id)">
@@ -183,7 +187,6 @@
                 <tr>
                   <th>標題</th>
                   <th>描述</th>
-                  <th>內容</th>
                   <th>作者</th>
                   <th>是否啟用</th>
                   <th>操作</th>
@@ -192,18 +195,17 @@
               <tbody>
                 <tr v-for="item in originData.articles" :key="item.create_at" :class="{'table-success': item.isPublic}">
                   <td>{{item.title}}</td>
-                  <td>{{item.description}}</td>
-                  <td v-html="item.content"></td>
+                  <td class="text-start">{{item.description}}</td>
                   <td>{{item.author}}</td>
                   <td>
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.isPublic" @click="putArticle(item, 'isPublic')">
+                    <div class="form-check form-switch d-flex justify-content-center">
+                      <input class="form-check-input me-2" type="checkbox" :id="item.id" :checked="item.isPublic" @click="putArticle(item, 'isPublic')">
                       <label class="form-check-label" :for="item.id">{{item.isPublic ? '已啟用' : '未啟用'}}</label>
                     </div>
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'" @click="tempData.article = {...item}">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="tempData.article = {...item}">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteArticle(item.id)">
@@ -221,23 +223,11 @@
               <thead>
                 <tr>
                   <th>預覽</th>
-                  <th>網址</th>
-                  <th>操作</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in originData.images">
-                  <!-- <td>{{item.title}}</td>
-                  <td>{{item.description}}</td> -->
-                  
-                  <td>
-                    <div class="d-flex">
-                      <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="'#' + selectTabNameEn + 'Modal'">
-                        修改  
-                      </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" @click="deleteImage(item.id)">
-                    </div>
-                  </td>
+                <tr>
+                  <td class="text-center">請按上方“新增”按鈕～</td>
                 </tr>
               </tbody>
             </table>
@@ -309,7 +299,7 @@
                 <template v-if="tempData.product.imagesUrl">
                   <div class="col-4" v-for="(item, key) in tempData.product.imagesUrl" :key="item">
                     <label for="" class="form-label">其他圖片 {{key + 1}}</label>
-                    <img class="img-thumbnail" :src="tempData.product.imagesUrl[key]" :alt="tempData.product.title + (key+1)｀">
+                    <img class="img-thumbnail" :src="tempData.product.imagesUrl[key]" :alt="tempData.product.title">
                   </div>
                 </template>
               </div>
@@ -327,8 +317,9 @@
     <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="couponModalLabel">新增優惠券</h5>
+          <div class="modal-header bg-secondary">
+            <h5 class="modal-title text-white" id="couponModalLabel" v-if="tempData.coupon.id === undefined">新增優惠券</h5>
+            <h5 class="modal-title text-warning" id="couponModalLabel" v-else>修改優惠券</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -376,8 +367,9 @@
     <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="articleModalLabel">新增文章</h5>
+          <div class="modal-header bg-secondary">
+            <h5 class="modal-title text-white" id="articleModalLabel" v-if="tempData.article.id === undefined">新增文章</h5>
+            <h5 class="modal-title text-warning" id="articleModalLabel" v-else>修改文章</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -437,7 +429,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addImage">新增</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addImageToUpload">新增</button>
           </div>
         </div>
       </div>

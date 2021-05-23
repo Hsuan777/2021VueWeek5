@@ -7,12 +7,12 @@ const App = Vue.createApp({
       hasLogin: false,
       displayData: {
         products: true,
-        orders: false,
-        coupons: false
       },
       tabList: ['商品', '訂單', '優惠券', '文章', '圖檔'],
-      selectTabName: '商品',
-      selectTabNameEn: 'product',
+      currentTab: {
+        name: '商品',
+        enName:'prduct'
+      },
       originData: {
         products: [],
         orders: [],
@@ -78,17 +78,6 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    getImage(page = 1) {
-      axios.get(`${this.url}/api/${this.path}/admin/upload`,).then(res => {
-        if (res.data.success) {
-          this.originData.images = res.data.articles;
-        } else {
-          console.log(res.data.message);
-        }
-      }).catch(res => {
-        console.log(res.data);
-      })
-    },
     addProduct() {
       let productObj = {
         data: {
@@ -97,10 +86,12 @@ const App = Vue.createApp({
       }
       axios.post(`${this.url}/api/${this.path}/admin/product`, productObj).then(res => {
         if (res.data.success) {
-          this.getProduct()
+          this.getProduct();
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     addCoupon() {
@@ -111,11 +102,11 @@ const App = Vue.createApp({
         }
       }
       const setDueDate = (num) => {
-        date.setDate(num)
+        date.setDate(num);
         couponObj.data['due_date'] = date.getTime();
       }
       setDueDate(couponObj.data['due_date']);
-      couponObj.data['is_enabled'] = 0
+      couponObj.data['is_enabled'] = 0;
       axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
         if (res.data.success) {
           this.tempData.coupon = {};
@@ -123,6 +114,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     addArticle() {
@@ -132,8 +125,8 @@ const App = Vue.createApp({
           ...this.tempData.article
         }
       }
-      articleObj.data.create_at = date.getTime()
-      articleObj.data.isPublic = false
+      articleObj.data.create_at = date.getTime();
+      articleObj.data.isPublic = false;
       axios.post(`${this.url}/api/${this.path}/admin/article`, articleObj).then(res => {
         if (res.data.success) {
           this.tempData.article = {};
@@ -141,19 +134,23 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
-    addImage() {
+    addImageToUpload() {
       let tempImageFile = this.$refs.uploadImage.files[0]
       console.log(tempImageFile);
-      const formData = new FormData()
-      formData.append('file', tempImageFile)
+      const formData = new FormData();
+      formData.append('file', tempImageFile);
       axios.post(`${this.url}/api/${this.path}/admin/upload`, formData).then(res => {
         if (res.data.success) {
           this.getImage();
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     putProduct(item, action) {
@@ -163,9 +160,9 @@ const App = Vue.createApp({
         }
       }
       if (action === 'isEnabled' && productObj.data.is_enabled === 0) {
-        productObj.data.is_enabled = 1
+        productObj.data.is_enabled = 1;
       } else {
-        productObj.data.is_enabled = 0
+        productObj.data.is_enabled = 0;
       }
       axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
@@ -173,6 +170,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     putOrder(item, action) {
@@ -190,6 +189,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     putCoupon(item, action) {
@@ -199,9 +200,9 @@ const App = Vue.createApp({
         }
       }
       if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
-        couponObj.data.is_enabled = 1
+        couponObj.data.is_enabled = 1;
       } else {
-        couponObj.data.is_enabled = 0
+        couponObj.data.is_enabled = 0;
       }
       axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
         if (res.data.success) {
@@ -209,6 +210,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     putArticle(item, action) {
@@ -218,9 +221,9 @@ const App = Vue.createApp({
         }
       }
       if (action === 'isPublic' && articleObj.data.is_enabled === 0) {
-        articleObj.data.is_enabled = 1
+        articleObj.data.is_enabled = 1;
       } else {
-        articleObj.data.is_enabled = 0
+        articleObj.data.is_enabled = 0;
       }
       axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
@@ -228,6 +231,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     deleteProduct(itemId) {
@@ -237,6 +242,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     deleteCoupon(itemId) {
@@ -246,6 +253,8 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     deleteArticle(itemId) {
@@ -255,68 +264,74 @@ const App = Vue.createApp({
         } else {
           console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     selectTab(item) {
       if (item !== this.selectTabName) {
         switch (item) {
           case '商品':
-            this.selectTabName = item
-            this.selectTabNameEn = 'product'
-            this.displayData.products = true
-            this.displayData.orders = false
-            this.displayData.coupons = false
-            this.displayData.articles = false
-            this.displayData.images = false
+            this.currentTab.name = item;
+            this.currentTab.enName = 'product';
+            this.displayData.products = true;
+            this.displayData.orders = false;
+            this.displayData.coupons = false;
+            this.displayData.articles = false;
+            this.displayData.images = false;
             this.getProduct()
             break;
           case '訂單':
-            this.selectTabName = item
-            this.displayData.products = false
-            this.displayData.orders = true
-            this.displayData.coupons = false
-            this.displayData.articles = false
-            this.displayData.images = false
+            this.currentTab.name = item;
+            this.displayData.products = false;
+            this.displayData.orders = true;
+            this.displayData.coupons = false;
+            this.displayData.articles = false;
+            this.displayData.images = false;
             this.getOrder()
             break;
           case '優惠券':
-            this.selectTabName = item
-            this.selectTabNameEn = 'coupon'
-            this.displayData.products = false
-            this.displayData.orders = false
-            this.displayData.coupons = true
-            this.displayData.articles = false
-            this.displayData.images = false
+            this.currentTab.name = item;
+            this.currentTab.enName = 'coupon';
+            this.displayData.products = false;
+            this.displayData.orders = false;
+            this.displayData.coupons = true;
+            this.displayData.articles = false;
+            this.displayData.images = false;
             this.getCoupon()
             break;
           case '文章':
-            this.selectTabName = item
-            this.selectTabNameEn = 'article'
-            this.displayData.products = false
-            this.displayData.orders = false
-            this.displayData.coupons = false
-            this.displayData.articles = true
-            this.displayData.images = false
+            this.currentTab.name = item;
+            this.currentTab.enName = 'article';
+            this.displayData.products = false;
+            this.displayData.orders = false;
+            this.displayData.coupons = false;
+            this.displayData.articles = true;
+            this.displayData.images = false;
             this.getArticle()
             break;
           case '圖檔':
-            this.selectTabName = item
-            this.selectTabNameEn = 'image'
-            this.displayData.products = false
-            this.displayData.orders = false
-            this.displayData.coupons = false
-            this.displayData.articles = false
-            this.displayData.images = true
-            // this.getImage()
+            this.currentTab.name = item;
+            this.currentTab.enName = 'image';
+            this.displayData.products = false;
+            this.displayData.orders = false;
+            this.displayData.coupons = false;
+            this.displayData.articles = false;
+            this.displayData.images = true;
             break;
         }
       }
     },
     logOut() {
       axios.post(`${this.url}/logout`).then(res => {
-        document.cookie = `hexToken=; expires=; path=/`;
-        this.hasLogin = false
-        window.location.replace('./index.html') ;
+        if (res.data.success) {
+          document.cookie = `hexToken=; expires=; path=/`;
+          this.hasLogin = false
+          window.location.replace('./index.html') ;
+        } else {
+          console.log(res.data.message);
+        }
+      }).catch(res => {
         console.log(res.data);
       })
     },
@@ -324,12 +339,15 @@ const App = Vue.createApp({
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
       axios.defaults.headers.common['Authorization'] = token;
       axios.post(`${this.url}/api/user/check`).then(res => {
-        if (res.data.success === false) {
-          window.location.replace('./index.html') ;
-        } else {
+        if (res.data.success) {
           this.hasLogin = true;
           this.getProduct();
+        } else {
+          window.location.replace('./index.html');
+          console.log(res.data.message);
         }
+      }).catch(res => {
+        console.log(res.data);
       })
     },
     addProductImage() {
