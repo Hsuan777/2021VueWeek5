@@ -44,5 +44,16 @@ const App = Vue.createApp({
 App.component('VForm', VeeValidate.Form);
 App.component('VField', VeeValidate.Field);
 App.component('ErrorMessage', VeeValidate.ErrorMessage);
-VeeValidate.defineRule('email', VeeValidateRules['email']);
+Object.keys(VeeValidateRules).forEach(rule => {
+  if (rule !== 'default') {
+    VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+  }
+});
+
+VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
+// Activate the locale
+VeeValidate.configure({
+  generateMessage: VeeValidateI18n.localize('zh_TW'),
+  // validateOnInput: true, // 調整為輸入字元立即進行驗證
+});
 App.mount("#app");
