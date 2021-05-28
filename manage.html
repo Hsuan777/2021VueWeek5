@@ -246,8 +246,8 @@
             <h5 class="modal-title text-warning" id="productModalLabel" v-else>修改商品</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <v-form action="" v-slot="{ errors }">
+          <v-form action="" v-slot="{ errors }">
+            <div class="modal-body">    
               <div class="row g-3">
                 <div class="col-12">
                   <label for="productName" class="form-label">商品名稱<span class="text-danger">*</span></label>
@@ -308,14 +308,14 @@
                   </div>
                 </template>
               </div>
+              <div class="modal-footer">
+                <!-- 若有錯誤則阻止新增 -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct" v-if="tempData.product.id === undefined" :disabled="tempData.product.title === undefined||Object.keys(errors).length !== 0">新增</button>
+                <button type="submit" class="btn btn-warning" data-bs-dismiss="modal" @click="putProduct(tempData.product)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              </div>
             </v-form>
-          </div>
-          <div class="modal-footer">
-            <!-- 若有錯誤則阻止新增 -->
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct" v-if="tempData.product.id === undefined">新增</button>
-            <button type="submit" class="btn btn-warning" data-bs-dismiss="modal" @click="putProduct(tempData.product)" v-else>修改</button>
-          </div>
+            </div>
         </div>
       </div>
     </div>
