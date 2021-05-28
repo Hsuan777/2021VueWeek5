@@ -12,7 +12,7 @@ const App = Vue.createApp({
         // 登入與登出屬性必須一致，才能更新。
         document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
         this.userInfo = {}
-        if (res.data.success === true) {
+        if (res.data.success) {
           window.location.assign('./manage.html');
         } else {
           console.log(res.data.message);
@@ -31,7 +31,7 @@ const App = Vue.createApp({
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
       axios.defaults.headers.common['Authorization'] = token;
       axios.post(`${this.url}/api/user/check`).then(res => {
-        if (res.data.success === true) {
+        if (res.data.success) {
           window.location.assign('./manage.html')
         }
       })
@@ -41,4 +41,8 @@ const App = Vue.createApp({
     this.checkLogin();
   }
 });
+App.component('VForm', VeeValidate.Form);
+App.component('VField', VeeValidate.Field);
+App.component('ErrorMessage', VeeValidate.ErrorMessage);
+VeeValidate.defineRule('email', VeeValidateRules['email']);
 App.mount("#app");

@@ -172,10 +172,8 @@ const App = Vue.createApp({
           ...item
         }
       }
-      if (action === 'isEnabled' && productObj.data.is_enabled === 0) {
-        productObj.data.is_enabled = 1;
-      } else {
-        productObj.data.is_enabled = 0;
+      if (action === 'isEnabled') {
+        productObj.data.is_enabled = !productObj.data.is_enabled;
       }
       axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
@@ -364,22 +362,21 @@ const App = Vue.createApp({
     addProductImage() {
       if (!this.tempData.product.imagesUrl) {
         this.tempData.product.imagesUrl = [];
-        this.tempData.product.imagesUrl.push('');
-      } else {
-        this.tempData.product.imagesUrl.push('');
-      }
+      } 
+      this.tempData.product.imagesUrl.push('');
     },
     addArticleTag() {
       if (!this.tempData.article.tag) {
         this.tempData.article.tag = [];
-        this.tempData.article.tag.push('');
-      } else {
-        this.tempData.article.tag.push('');
       }
+      this.tempData.article.tag.push('');
     }
   },
   created() {
     this.checkLogin();
   }
 });
+App.component('VForm', VeeValidate.Form);
+App.component('VField', VeeValidate.Field);
+App.component('ErrorMessage', VeeValidate.ErrorMessage);
 App.mount("#app");
