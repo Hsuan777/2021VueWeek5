@@ -370,6 +370,13 @@ const App = Vue.createApp({
         this.tempData.article.tag = [];
       }
       this.tempData.article.tag.push('');
+    },
+    minValue(value) {
+      console.log(value);
+      if (value*1 < 0) {
+        this.tempData.product.origin_price = 0;
+        return '不可小於 0';
+      }
     }
   },
   created() {
@@ -379,4 +386,16 @@ const App = Vue.createApp({
 App.component('VForm', VeeValidate.Form);
 App.component('VField', VeeValidate.Field);
 App.component('ErrorMessage', VeeValidate.ErrorMessage);
+Object.keys(VeeValidateRules).forEach(rule => {
+  if (rule !== 'default') {
+    VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+  }
+});
+
+VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
+// Activate the locale
+VeeValidate.configure({
+  generateMessage: VeeValidateI18n.localize('zh_TW'),
+  // validateOnInput: true, // 調整為輸入字元立即進行驗證
+});
 App.mount("#app");

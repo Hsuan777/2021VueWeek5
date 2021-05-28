@@ -247,11 +247,12 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form action="">
+            <v-form action="" v-slot="{ errors }">
               <div class="row g-3">
                 <div class="col-12">
-                  <label for="productName" class="form-label">名稱</label>
-                  <input type="text" id="productName" class="form-control" placeholder="名稱" v-model="tempData.product.title">
+                  <label for="productName" class="form-label">商品名稱<span class="text-danger">*</span></label>
+                  <v-field id="productName" name="商品名稱" type="text" class="form-control" :class="{ 'is-invalid': errors['商品名稱'] }" rules="required" v-model="tempData.product.title"></v-field>
+                  <error-message name="商品名稱" class="invalid-feedback"></error-message>
                 </div>
                 <div class="col-12">
                   <label for="productDescription" class="form-label">描述</label>
@@ -262,24 +263,25 @@
                   <textarea type="text" rows="3" id="productContent" class="form-control" placeholder="商品內容" v-model="tempData.product.content"></textarea>
                 </div>
                 <div class="col">
-                  <label for="productOriginPrice" class="form-label">定價</label>
-                  <input type="text" id="productOriginPrice" class="form-control" placeholder="定價" v-model.number="tempData.product.origin_price">
+                  <label for="productOriginPrice" class="form-label">定價<span class="text-danger">*</span></label>
+                  <v-field id="productOriginPrice" name="定價" type="number" class="form-control" :class="{ 'is-invalid': errors['定價'] }" rules="min_value:0|required" v-model="tempData.product.origin_price"></v-field>
+                  <error-message name="定價" class="invalid-feedback"></error-message>
                 </div>
                 <div class="col">
-                  <label for="productPrice" class="form-label">售價</label>
+                  <label for="productPrice" class="form-label">售價<span class="text-danger">*</span></label>
                   <input type="text" id="productPrice" class="form-control" placeholder="售價" v-model.number="tempData.product.price">
                 </div>
                 <div class="col">
-                  <label for="productCategory" class="form-label">類別</label>
+                  <label for="productCategory" class="form-label">類別<span class="text-danger">*</span></label>
                   <input type="text" id="productCategory" class="form-control" placeholder="類別" v-model="tempData.product.category">
                 </div>
                 <div class="col">
-                  <label for="productUnit" class="form-label">單位</label>
+                  <label for="productUnit" class="form-label">單位<span class="text-danger">*</span></label>
                   <input type="text" id="productUnit" class="form-control" placeholder="單位" v-model="tempData.product.unit">
                 </div>
                 <div class="col-12">
                   <div class="d-flex align-items-center mb-2">
-                    <label for="productImageUrl" class="form-label mb-0">主圖網址</label>
+                    <label for="productImageUrl" class="form-label mb-0">主圖網址<span class="text-danger">*</span></label>
                     <!-- 加入額外圖片 -->
                     <input type="button" class="btn btn-primary btn-sm ms-2" value="Add Image" @click="addProductImage">
                   </div>
@@ -306,12 +308,13 @@
                   </div>
                 </template>
               </div>
-            </form>
+            </v-form>
           </div>
           <div class="modal-footer">
+            <!-- 若有錯誤則阻止新增 -->
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct" v-if="tempData.product.id === undefined">新增</button>
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="putProduct(tempData.product)" v-else>修改</button>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct" v-if="tempData.product.id === undefined">新增</button>
+            <button type="submit" class="btn btn-warning" data-bs-dismiss="modal" @click="putProduct(tempData.product)" v-else>修改</button>
           </div>
         </div>
       </div>
