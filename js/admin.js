@@ -1,3 +1,4 @@
+import products from './productsList.js'
 const App = Vue.createApp({
   data() {
     return {
@@ -378,6 +379,9 @@ const App = Vue.createApp({
         return '不可小於 0';
       }
     }
+  },
+  components:{
+    products
   },
   created() {
     this.checkLogin();
