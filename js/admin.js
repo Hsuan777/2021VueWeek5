@@ -372,11 +372,25 @@ const App = Vue.createApp({
       }
       this.tempData.article.tag.push('');
     },
-    minValue(value) {
-      console.log(value);
-      if (value*1 < 0) {
-        this.tempData.product.origin_price = 0;
-        return '不可小於 0';
+    checkProps() {
+      let requiredProps = [];
+      let hasAll = null;
+      switch (this.currentTab.name) {
+        case '商品':
+          requiredProps = ['title', 'origin_price', 'price', 'category', 'unit'];
+          hasAll = requiredProps .every(prop => this.tempData.product.hasOwnProperty(prop));
+          return !hasAll
+          break;
+        case '優惠券':
+          requiredProps = ['title', 'percent', 'code'];
+          hasAll = requiredProps .every(prop => this.tempData.coupon.hasOwnProperty(prop));
+          return !hasAll
+          break;
+        case '文章':
+          requiredProps = ['title', 'author', 'content'];
+          hasAll = requiredProps .every(prop => this.tempData.article.hasOwnProperty(prop));
+          return !hasAll
+          break;
       }
     }
   },
