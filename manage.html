@@ -27,7 +27,7 @@
       <div class="d-flex align-items-center">
         <h2>項目列表</h2>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" v-if="currentTab.name !== '訂單'" @click="tempData[currentTab.enName] = {}">
+        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" v-if="currentTab.name !== '訂單'" @click="addTempData">
           {{'新增' + currentTab.name}}
         </button>
       </div>
@@ -247,7 +247,7 @@
             <h5 class="modal-title text-warning" id="productModalLabel" v-else>修改商品</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <v-form action="" v-slot="{ errors }">
+          <v-form action="" v-slot="{ errors }" ref="productForm">
             <div class="modal-body">    
               <div class="row g-3">
                 <div class="col-12">
@@ -332,7 +332,7 @@
             <h5 class="modal-title text-warning" id="couponModalLabel" v-else>修改優惠券</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <v-form action="" v-slot="{ errors }">
+          <v-form action="" v-slot="{ errors }" ref="couponForm">
             <div class="modal-body">
               <div class="row g-3">
                 <div class="col-12">
@@ -374,7 +374,7 @@
             <h5 class="modal-title text-warning" id="articleModalLabel" v-else>修改文章</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <v-form action="" v-slot="{ errors }">
+          <v-form action="" v-slot="{ errors }" ref="articleForm">
             <div class="modal-body">
               <div class="row g-3">
                 <div class="col-12">

@@ -360,6 +360,10 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    addTempData() {
+      this.tempData[this.currentTab.enName] = {}; 
+      this.$refs[this.currentTab.enName + 'Form'].resetForm();
+    },
     addProductImage() {
       if (!this.tempData.product.imagesUrl) {
         this.tempData.product.imagesUrl = [];
