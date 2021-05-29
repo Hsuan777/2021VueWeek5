@@ -27,7 +27,7 @@
         <div class="col-4 mx-auto">
           <h2 class="text-center mb-3">Login</h2>
           <!-- errors['對應 name 的名稱'] -->
-          <v-form action="" v-slot="{ errors }" @submit="signIn">
+          <v-form action="" v-slot="{ errors }" @submit="signIn" ref="signForm">
             <div class="form-floating mb-3">
               <v-field id="userName" name="Email" type="email" class="form-control" :class="{ 'is-invalid': errors['Email'] }" rules="email|required" v-model="userInfo.username"></v-field>
               <error-message name="Email" class="invalid-feedback"></error-message>

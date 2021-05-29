@@ -12,6 +12,7 @@ const App = Vue.createApp({
         // 登入與登出屬性必須一致，才能更新。
         document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
         this.userInfo = {}
+        this.$refs.signForm.resetForm();
         if (res.data.success) {
           window.location.assign('./manage.html');
         } else {
