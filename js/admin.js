@@ -29,6 +29,7 @@ const App = Vue.createApp({
         article: {
           tag:[],
         },
+        modal: {}
       }
     };
   },
@@ -99,6 +100,7 @@ const App = Vue.createApp({
       }
       axios.post(`${this.url}/api/${this.path}/admin/product`, productObj).then(res => {
         if (res.data.success) {
+          this.tempData.modal.hide()
           this.getProducts();
         } else {
           console.log(res.data.message);
@@ -124,7 +126,7 @@ const App = Vue.createApp({
       couponObj.data['is_enabled'] = 0;
       axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
         if (res.data.success) {
-          this.tempData.coupon = {};
+          this.tempData.modal.hide()
           this.getCoupons();
         } else {
           console.log(res.data.message);
@@ -144,7 +146,7 @@ const App = Vue.createApp({
       articleObj.data.isPublic = false;
       axios.post(`${this.url}/api/${this.path}/admin/article`, articleObj).then(res => {
         if (res.data.success) {
-          this.tempData.article = {};
+          this.tempData.modal.hide()
           this.getArticles();
         } else {
           console.log(res.data.message);
@@ -178,6 +180,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
+          this.tempData.modal.hide()
           this.getProducts();
         } else {
           console.log(res.data.message);
@@ -218,6 +221,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
         if (res.data.success) {
+          this.tempData.modal.hide()
           this.getCoupons();
         } else {
           console.log(res.data.message);
@@ -237,6 +241,7 @@ const App = Vue.createApp({
       } 
       axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
+          this.tempData.modal.hide()
           this.getArticles();
         } else {
           console.log(res.data.message);
@@ -363,6 +368,13 @@ const App = Vue.createApp({
     addTempData() {
       this.tempData[this.currentTab.enName] = {}; 
       this.$refs[this.currentTab.enName + 'Form'].resetForm();
+      this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      this.tempData.modal.show();
+    },
+    editTempData(item) {
+      this.tempData.product = {...item};
+      this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      this.tempData.modal.show();
     },
     addProductImage() {
       if (!this.tempData.product.imagesUrl) {

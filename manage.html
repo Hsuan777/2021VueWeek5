@@ -27,7 +27,8 @@
       <div class="d-flex align-items-center">
         <h2>項目列表</h2>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" v-if="currentTab.name !== '訂單'" @click="addTempData">
+        <!-- <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" v-if="currentTab.name !== '訂單'" @click="addTempData"> -->
+        <button type="button" class="btn btn-primary ms-auto" v-if="currentTab.name !== '訂單'" @click="addTempData">
           {{'新增' + currentTab.name}}
         </button>
       </div>
@@ -86,7 +87,7 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="tempData.product = {...item}">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteProduct(item.id)">
@@ -239,7 +240,7 @@
     </section>
     <!-- Modal -->
     <!-- add/edit 產品 -->
-    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header bg-secondary">
@@ -324,7 +325,7 @@
       </div>
     </div>
     <!-- add/edit 優惠券 -->
-    <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header bg-secondary">
@@ -366,7 +367,7 @@
       </div>
     </div>
     <!-- add/edit 文章 -->
-    <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header bg-secondary">
@@ -424,7 +425,7 @@
       </div>
     </div>
     <!-- add/edit 圖檔 -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
