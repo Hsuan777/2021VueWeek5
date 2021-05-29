@@ -82,6 +82,7 @@ const App = Vue.createApp({
       axios.get(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
         if (res.data.success) {
           this.tempData.article = res.data.article;
+          this.editTempData(this.tempData.article)
           if (action === 'isPublic') {
             this.putArticle(res.data.article, action);
           }
@@ -180,7 +181,7 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
-          this.tempData.modal.hide()
+          this.tempData.modal.hide();
           this.getProducts();
         } else {
           console.log(res.data.message);
@@ -372,7 +373,7 @@ const App = Vue.createApp({
       this.tempData.modal.show();
     },
     editTempData(item) {
-      this.tempData.product = {...item};
+      this.tempData[this.currentTab.enName] = {...item};
       this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
       this.tempData.modal.show();
     },

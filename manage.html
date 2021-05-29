@@ -171,7 +171,7 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="tempData.coupon = {...item}">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteCoupon(item.id)">
@@ -208,7 +208,7 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" @click="getArticle(item.id)">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}"  @click="getArticle(item.id)">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteArticle(item.id)">
@@ -317,8 +317,8 @@
             <div class="modal-footer">
               <!-- 若有錯誤則阻止新增 -->
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="addProduct" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.product.id === undefined">新增</button>
-              <button type="submit" class="btn btn-warning" data-bs-dismiss="modal" @click="putProduct(tempData.product)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              <button type="button" class="btn btn-primary"  @click="addProduct" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.product.id === undefined">新增</button>
+              <button type="button" class="btn btn-warning" @click="putProduct(tempData.product)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
             </div>
           </v-form>
         </div>
@@ -359,8 +359,8 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addCoupon" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.coupon.id === undefined">新增</button>
-              <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="putCoupon(tempData.coupon)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              <button type="button" class="btn btn-primary" @click="addCoupon" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.coupon.id === undefined">新增</button>
+              <button type="button" class="btn btn-warning" @click="putCoupon(tempData.coupon)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
             </div>
           </v-form>
         </div>
@@ -417,8 +417,8 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="addArticle" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.article.id === undefined">新增</button>
-              <button type="submit" class="btn btn-warning" data-bs-dismiss="modal" @click="putArticle(tempData.article)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              <button type="button" class="btn btn-primary" @click="addArticle" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.article.id === undefined">新增</button>
+              <button type="button" class="btn btn-warning" @click="putArticle(tempData.article)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
             </div>
           </form>
         </div>
