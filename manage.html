@@ -90,7 +90,7 @@
                       <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteProduct(item.id)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -135,7 +135,8 @@
                   <td>
                     <div class="btn-group">
                       <!-- 能修改金額，不過有更好的方式？ -->
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': !item.is_paid}" @click="deleteOrder(item.id)">
+                      <!-- <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': !item.is_paid}" @click="deleteOrder(item.id)"> -->
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': !item.is_paid}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -174,7 +175,7 @@
                       <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="deleteCoupon(item.id)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -211,7 +212,7 @@
                       <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}"  @click="getArticle(item.id)">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="deleteArticle(item.id)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -317,8 +318,10 @@
             <div class="modal-footer">
               <!-- 若有錯誤則阻止新增 -->
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary"  @click="addProduct" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.product.id === undefined">新增</button>
-              <button type="button" class="btn btn-warning" @click="putProduct(tempData.product)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              <button type="button" class="btn btn-primary"  @click="addProduct" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.product.id === undefined">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>新增</button>
+              <button type="button" class="btn btn-warning" @click="putProduct(tempData.product)" :disabled="Object.keys(errors).length !== 0" v-else>
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>修改</button>
             </div>
           </v-form>
         </div>
@@ -343,7 +346,7 @@
                 </div>
                 <div class="col">
                   <label for="couponPercent" class="form-label">折扣率<span class="text-danger">*</span></label>
-                  <v-field id="couponPercent" name="折扣率" type="number" class="form-control" placeholder="80 為 8 折" :class="{ 'is-invalid': errors['折扣率'] }" rules="min_value:0|required" v-model.number="tempData.coupon.percent"></v-field>
+                  <v-field id="couponPercent" name="折扣率" type="number" class="form-control" placeholder="80 為 8 折" :class="{ 'is-invalid': errors['折扣率'] }" rules="min_value:0|max_value:99|required" v-model.number="tempData.coupon.percent"></v-field>
                   <error-message name="折扣率" class="invalid-feedback"></error-message>
                 </div>
                 <div class="col">
@@ -359,8 +362,10 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" @click="addCoupon" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.coupon.id === undefined">新增</button>
-              <button type="button" class="btn btn-warning" @click="putCoupon(tempData.coupon)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              <button type="button" class="btn btn-primary" @click="addCoupon" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.coupon.id === undefined">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>新增</button>
+              <button type="button" class="btn btn-warning" @click="putCoupon(tempData.coupon)" :disabled="Object.keys(errors).length !== 0" v-else>
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>修改</button>
             </div>
           </v-form>
         </div>
@@ -417,8 +422,10 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" @click="addArticle" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.article.id === undefined">新增</button>
-              <button type="button" class="btn btn-warning" @click="putArticle(tempData.article)" :disabled="Object.keys(errors).length !== 0" v-else>修改</button>
+              <button type="button" class="btn btn-primary" @click="addArticle" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.article.id === undefined">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>新增</button>
+              <button type="button" class="btn btn-warning" @click="putArticle(tempData.article)" :disabled="Object.keys(errors).length !== 0" v-else>
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>修改</button>
             </div>
           </form>
         </div>
@@ -449,6 +456,25 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addImageToUpload">新增</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- delete Modal -->
+    <div class="modal fade" ref="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger" id="deleteModalLabel">刪除</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            您是否要刪除[ {{currentTab.name}} ][ {{tempData[currentTab.enName].title}} ]?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-danger" @click="deleteData">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>刪除</button>
           </div>
         </div>
       </div>

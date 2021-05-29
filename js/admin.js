@@ -29,8 +29,9 @@ const App = Vue.createApp({
         article: {
           tag:[],
         },
-        modal: {}
-      }
+        modal: ''
+      },
+      loading: false
     };
   },
   methods: {
@@ -82,7 +83,6 @@ const App = Vue.createApp({
       axios.get(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
         if (res.data.success) {
           this.tempData.article = res.data.article;
-          this.editTempData(this.tempData.article)
           if (action === 'isPublic') {
             this.putArticle(res.data.article, action);
           }
@@ -94,6 +94,7 @@ const App = Vue.createApp({
       })
     },
     addProduct() {
+      this.loading = true;
       let productObj = {
         data: {
           ...this.tempData.product
@@ -101,7 +102,8 @@ const App = Vue.createApp({
       }
       axios.post(`${this.url}/api/${this.path}/admin/product`, productObj).then(res => {
         if (res.data.success) {
-          this.tempData.modal.hide()
+          this.loading = false;
+          this.tempData.modal.hide();
           this.getProducts();
         } else {
           console.log(res.data.message);
@@ -111,6 +113,7 @@ const App = Vue.createApp({
       })
     },
     addCoupon() {
+      this.loading = true;
       let date = new Date();
       let couponObj = {
         data: {
@@ -127,6 +130,7 @@ const App = Vue.createApp({
       couponObj.data['is_enabled'] = 0;
       axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
         if (res.data.success) {
+          this.loading = false;
           this.tempData.modal.hide()
           this.getCoupons();
         } else {
@@ -137,6 +141,7 @@ const App = Vue.createApp({
       })
     },
     addArticle() {
+      this.loading = true;
       let date = new Date();
       let articleObj = {
         data: {
@@ -147,6 +152,7 @@ const App = Vue.createApp({
       articleObj.data.isPublic = false;
       axios.post(`${this.url}/api/${this.path}/admin/article`, articleObj).then(res => {
         if (res.data.success) {
+          this.loading = false;
           this.tempData.modal.hide()
           this.getArticles();
         } else {
@@ -171,6 +177,7 @@ const App = Vue.createApp({
       })
     },
     putProduct(item, action) {
+      this.loading = true;
       let productObj = {
         data: {
           ...item
@@ -181,13 +188,17 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
         if (res.data.success) {
-          this.tempData.modal.hide();
+          this.loading = false;
+          if (this.tempData.modal) {
+            this.tempData.modal.hide();
+            this.tempData.modal = '';
+          }
           this.getProducts();
         } else {
           console.log(res.data.message);
         }
       }).catch(res => {
-        console.log(res.data);
+        console.log(res);
       })
     },
     putOrder(item, action) {
@@ -210,6 +221,7 @@ const App = Vue.createApp({
       })
     },
     putCoupon(item, action) {
+      this.loading = true;
       let couponObj = {
         data: {
           ...item
@@ -222,7 +234,11 @@ const App = Vue.createApp({
       }
       axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
         if (res.data.success) {
-          this.tempData.modal.hide()
+          this.loading = false;
+          if (this.tempData.modal) {
+            this.tempData.modal.hide();
+            this.tempData.modal = '';
+          }
           this.getCoupons();
         } else {
           console.log(res.data.message);
@@ -232,6 +248,7 @@ const App = Vue.createApp({
       })
     },
     putArticle(item, action) {
+      this.loading = true;
       let articleObj = {
         data: {
           ...item
@@ -242,7 +259,11 @@ const App = Vue.createApp({
       } 
       axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
         if (res.data.success) {
-          this.tempData.modal.hide()
+          this.loading = false;
+          if (this.tempData.modal) {
+            this.tempData.modal.hide();
+            this.tempData.modal = '';
+          }
           this.getArticles();
         } else {
           console.log(res.data.message);
@@ -252,8 +273,11 @@ const App = Vue.createApp({
       })
     },
     deleteProduct(itemId) {
+      this.loading = true;
       axios.delete(`${this.url}/api/${this.path}/admin/product/${itemId}`).then(res => {
         if (res.data.success) {
+          this.loading = false;
+          this.tempData.modal.hide();
           this.getProducts();
         } else {
           console.log(res.data.message);
@@ -263,8 +287,11 @@ const App = Vue.createApp({
       })
     },
     deleteCoupon(itemId) {
+      this.loading = true;
       axios.delete(`${this.url}/api/${this.path}/admin/coupon/${itemId}`).then(res => {
         if (res.data.success) {
+          this.loading = false;
+          this.tempData.modal.hide();
           this.getCoupons();
         } else {
           console.log(res.data.message);
@@ -274,8 +301,11 @@ const App = Vue.createApp({
       })
     },
     deleteArticle(itemId) {
+      this.loading = true;
       axios.delete(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
         if (res.data.success) {
+          this.loading = false;
+          this.tempData.modal.hide();
           this.getArticles();
         } else {
           console.log(res.data.message);
@@ -376,6 +406,24 @@ const App = Vue.createApp({
       this.tempData[this.currentTab.enName] = {...item};
       this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
       this.tempData.modal.show();
+    },
+    openDeleteModal(item) {
+      this.tempData[this.currentTab.enName] = {...item}
+      this.tempData.modal = new bootstrap.Modal(this.$refs.deleteModal);
+      this.tempData.modal.show();
+    },
+    deleteData() {
+      switch (this.currentTab.name) {
+        case '商品':
+          this.deleteProduct(this.tempData[this.currentTab.enName].id);
+          break;
+        case '優惠券':
+          this.deleteCoupon(this.tempData[this.currentTab.enName].id);
+          break;
+        case '文章':
+          this.deleteArticle(this.tempData[this.currentTab.enName].id);
+          break;
+      }
     },
     addProductImage() {
       if (!this.tempData.product.imagesUrl) {
