@@ -87,10 +87,10 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
+                      <button type="button" class="btn btn-secondary" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="openDeleteModal(item)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger border-secondary" :class="{'disabled': item.is_enabled}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -134,9 +134,8 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <!-- 能修改金額，不過有更好的方式？ -->
-                      <!-- <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': !item.is_paid}" @click="deleteOrder(item.id)"> -->
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': !item.is_paid}" @click="openDeleteModal(item)">
+                      <!-- 可以修改金額與付款狀態 -->
+                      <input type="button" value="刪除" class="btn btn-outline-danger border-secondary" :class="{'disabled': !item.is_paid}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -172,10 +171,10 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
+                      <button type="button" class="btn btn-secondary" :class="{'disabled': item.is_enabled}" @click="editTempData(item)">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.is_enabled}" @click="openDeleteModal(item)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger border-secondary" :class="{'disabled': item.is_enabled}" @click="openDeleteModal(item)">
                     </div>
                   </td>
                 </tr>
@@ -209,29 +208,12 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}"  @click="getArticle(item.id, 'edit')">
+                      <button type="button" class="btn btn-secondary" :class="{'disabled': item.isPublic}"  @click="getArticle(item.id, 'edit')">
                         修改  
                       </button>
-                      <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="openDeleteModal(item)">
+                      <input type="button" value="刪除" class="btn btn-outline-danger border-secondary" :class="{'disabled': item.isPublic}" @click="openDeleteModal(item)">
                     </div>
                   </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </template>
-        <!-- 圖檔列表，現無列表 API-->
-        <template v-if="displayData.images">
-          <div class="card-body">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>預覽</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-center">請按上方“新增”按鈕～</td>
                 </tr>
               </tbody>
             </table>
@@ -244,9 +226,9 @@
     <div class="modal fade" ref="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <div class="modal-header bg-secondary">
-            <h5 class="modal-title text-white" id="productModalLabel" v-if="tempData.product.id === undefined">新增商品</h5>
-            <h5 class="modal-title text-warning" id="productModalLabel" v-else>修改商品</h5>
+          <div class="modal-header">
+            <h5 class="modal-title text-primary" id="productModalLabel" v-if="tempData.product.id === undefined">新增商品</h5>
+            <h5 class="modal-title" id="productModalLabel" v-else>修改商品</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <v-form action="" v-slot="{ errors }" ref="productForm">
@@ -331,9 +313,9 @@
     <div class="modal fade" ref="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header bg-secondary">
-            <h5 class="modal-title text-white" id="couponModalLabel" v-if="tempData.coupon.id === undefined">新增優惠券</h5>
-            <h5 class="modal-title text-warning" id="couponModalLabel" v-else>修改優惠券</h5>
+          <div class="modal-header">
+            <h5 class="modal-title text-primary" id="couponModalLabel" v-if="tempData.coupon.id === undefined">新增優惠券</h5>
+            <h5 class="modal-title" id="couponModalLabel" v-else>修改優惠券</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <v-form action="" v-slot="{ errors }" ref="couponForm">
@@ -375,9 +357,9 @@
     <div class="modal fade" ref="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header bg-secondary">
-            <h5 class="modal-title text-white" id="articleModalLabel" v-if="tempData.article.id === undefined">新增文章</h5>
-            <h5 class="modal-title text-warning" id="articleModalLabel" v-else>修改文章</h5>
+          <div class="modal-header">
+            <h5 class="modal-title text-primary" id="articleModalLabel" v-if="tempData.article.id === undefined">新增文章</h5>
+            <h5 class="modal-title" id="articleModalLabel" v-else>修改文章</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <v-form action="" v-slot="{ errors }" ref="articleForm">
@@ -428,35 +410,6 @@
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>修改</button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
-    <!-- add/edit 圖檔 -->
-    <div class="modal fade" ref="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="imageModalLabel">新增圖檔</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form action="">
-              <div class="row g-3">
-                <div class="col-12">
-                  <label for="imageTitle" class="form-label">請選擇上傳圖片</label>
-                  <input type="file" id="imageTitle" class="form-control" placeholder="圖片網址" accept="image/png, image/jpeg, image/gif" ref="uploadImage">
-                </div>
-                <!-- 待修正，未來新增預覽 -->
-                <!-- <div class="col-12">
-                  <img :src="tempData.image" alt="">
-                </div> -->
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addImageToUpload">新增</button>
-          </div>
         </div>
       </div>
     </div>
