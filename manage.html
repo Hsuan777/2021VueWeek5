@@ -26,24 +26,23 @@
     <section class="container mt-5" v-if="hasLogin">
       <div class="d-flex align-items-center">
         <h2>項目列表</h2>
-        <!-- Button trigger modal -->
-        <!-- <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" :data-bs-target="'#' + currentTab.enName + 'Modal'" v-if="currentTab.name !== '訂單'" @click="addTempData"> -->
+        <!-- 新增商品 -->
         <button type="button" class="btn btn-primary ms-auto" v-if="currentTab.name !== '訂單'" @click="addTempData">
           {{'新增' + currentTab.name}}
         </button>
       </div>
       <!-- 項目列表 -->
-      <div class="card text-center">
+      <div class="card">
         <!-- 功能頁籤與搜尋欄 -->
-        <div class="card-header d-flex align-items-end">
-          <ul class="nav nav-tabs card-header-tabs">
+        <header class="card-header d-flex align-items-end">
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
             <li class="nav-item" v-for:="item in tabList" :key="item" @click="selectTab(item)">
               <a class="nav-link" :class="{'active': item === currentTab.name }">{{item}}</a>
             </li>
           </ul>
+          <!-- 搜尋欄，待修正 -->
           <div class="form-floating ms-auto">
             <input class="form-control" list="datalistOptions" id="searchData" placeholder="Type to search...">
-            <!-- 待修正 -->
             <label for="searchData">搜尋{{currentTab.name}}...</label>
             <datalist id="datalistOptions">
               <option value="San Francisco">
@@ -53,10 +52,9 @@
               <option value="Chicago">
             </datalist>
           </div>
-        </div>
+        </header>
         <!-- 商品列表 -->
         <template v-if="displayData.products">
-          <!-- <products :data="originData.products" :tab="currentTab"></products> -->
           <div class="card-body">
             <table class="table">
               <thead>
@@ -82,7 +80,10 @@
                   <td class="align-middle">
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @click="putProduct(item, 'isEnabled')">
-                      <label class="form-check-label" :for="item.id">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
+                      <label class="form-check-label" :for="item.id">
+                        {{item.is_enabled ? '已啟用' : '未啟用'}}
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
+                      </label>
                     </div>
                   </td>
                   <td>
@@ -121,15 +122,18 @@
                   <td>{{item.user.tel}}</td>
                   <td>{{item.user.address}}</td>
                   <td>
-                    <p v-for="item in item.products" :key="item.product.id" class="mb-0">
-                      {{item.product.title}}
+                    <p v-for="productItem in item.products" :key="productItem.product.id" class="mb-0">
+                      {{productItem.product.title}}
                     </p>
                   </td>
                   <td>{{item.total}}</td>
                   <td>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_paid" @click="putOrder(item, 'isPaid')">
-                      <label class="form-check-label" :for="item.id">{{item.is_paid ? '已付款' : '未付款'}}</label>
+                      <label class="form-check-label" :for="item.id">
+                        {{item.is_paid ? '已付款' : '未付款'}}
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
+                      </label>
                     </div>
                   </td>
                   <td>
@@ -166,7 +170,10 @@
                   <td>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @click="putCoupon(item, 'isEnabled')">
-                      <label class="form-check-label" :for="item.id">{{item.is_enabled ? '已啟用' : '未啟用'}}</label>
+                      <label class="form-check-label" :for="item.id">
+                        {{item.is_enabled ? '已啟用' : '未啟用'}}
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
+                      </label>
                     </div>
                   </td>
                   <td>
@@ -203,7 +210,10 @@
                   <td>
                     <div class="form-check form-switch d-flex justify-content-center">
                       <input class="form-check-input me-2" type="checkbox" :id="item.id" :checked="item.isPublic" @click="getArticle(item.id, 'isPublic')">
-                      <label class="form-check-label" :for="item.id">{{item.isPublic ? '已啟用' : '未啟用'}}</label>
+                      <label class="form-check-label" :for="item.id">
+                        {{item.isPublic ? '已啟用' : '未啟用'}}
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
+                      </label>
                     </div>
                   </td>
                   <td>
@@ -223,7 +233,7 @@
     </section>
     <!-- Modal -->
     <!-- add/edit 產品 -->
-    <div class="modal fade" ref="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="productModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -310,7 +320,7 @@
       </div>
     </div>
     <!-- add/edit 優惠券 -->
-    <div class="modal fade" ref="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="couponModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -354,7 +364,7 @@
       </div>
     </div>
     <!-- add/edit 文章 -->
-    <div class="modal fade" ref="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="articleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -414,7 +424,7 @@
       </div>
     </div>
     <!-- delete Modal -->
-    <div class="modal fade" ref="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal fade" ref="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -422,7 +432,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            您是否要刪除[ {{currentTab.name}} ][ {{tempData[currentTab.enName].title}} ]?
+            您是否要刪除[ {{currentTab.name}} ][ {{tempData[currentTab.enName].title}}]?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
