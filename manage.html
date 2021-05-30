@@ -320,7 +320,8 @@
       </div>
     </div>
     <!-- add/edit 優惠券 -->
-    <div class="modal fade" ref="couponModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <modal-coupon id="couponModal" :temp-data="tempData.coupon"></modal-coupon>
+    <!-- <div class="modal fade" ref="couponModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -346,10 +347,6 @@
                   <v-field id="couponCode" name="代碼" type="text" class="form-control" placeholder="英數較佳 e.g. VS777" :class="{ 'is-invalid': errors['代碼'] }" rules="min:4|required" v-model="tempData.coupon.code"></v-field>
                   <error-message name="代碼" class="invalid-feedback"></error-message>
                 </div>
-                <!-- 日後更新 -->
-                <!-- <div class="col-12">
-                  <label for="couponPercent" class="form-label me-2">期限</label>
-                </div> -->
               </div>
             </div>
             <div class="modal-footer">
@@ -362,7 +359,7 @@
           </v-form>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- add/edit 文章 -->
     <div class="modal fade" ref="articleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
       <div class="modal-dialog">

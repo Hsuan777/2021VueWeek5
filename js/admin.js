@@ -1,10 +1,10 @@
 import modalDelete from "./bs-modal/delete.js";
+import modalCoupon from "./bs-modal/coupon.js";
 const App = Vue.createApp({
   data() {
     return {
       url: 'https://vue3-course-api.hexschool.io',
       path: 'vs',
-      userInfo: {},
       hasLogin: false,
       displayData: {
         products: true,
@@ -124,36 +124,36 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    addCoupon() {
-      const apiUrl = `${this.url}/api/${this.path}/admin/coupon`;
-      let date = new Date();
-      let couponObj = {
-        data: {
-          ...this.tempData.coupon
-        }
-      }
-      const setDueDate = (num) => {
-        // setDate 會變更現在日期，例如當月 23 號，setDate(30)，會變成當月 30 號
-        date.setDate(date.getDate() + num);
-        couponObj.data['due_date'] = date.getTime();
-      }
-      this.loading = true;
-      // 暫時設定往後 30 天，之後改成可選日期
-      setDueDate(30);
-      couponObj.data['is_enabled'] = 0;
-      axios.post(apiUrl, couponObj).then(res => {
-        if (res.data.success) {
-          this.loading = false;
-          this.tempData.modal.hide()
-          this.getCoupons();
-        } else {
-          alert(res.data.message);
-        }
-      }).catch(res => {
-        alert('無法加入資料喔～快去看什麼問題吧！')
-        console.log(res.data);
-      })
-    },
+    // addCoupon() {
+    //   const apiUrl = `${this.url}/api/${this.path}/admin/coupon`;
+    //   let date = new Date();
+    //   let couponObj = {
+    //     data: {
+    //       ...this.tempData.coupon
+    //     }
+    //   }
+    //   const setDueDate = (num) => {
+    //     // setDate 會變更現在日期，例如當月 23 號，setDate(30)，會變成當月 30 號
+    //     date.setDate(date.getDate() + num);
+    //     couponObj.data['due_date'] = date.getTime();
+    //   }
+    //   this.loading = true;
+    //   // 暫時設定往後 30 天，之後改成可選日期
+    //   setDueDate(30);
+    //   couponObj.data['is_enabled'] = 0;
+    //   axios.post(apiUrl, couponObj).then(res => {
+    //     if (res.data.success) {
+    //       this.loading = false;
+    //       this.tempData.modal.hide()
+    //       this.getCoupons();
+    //     } else {
+    //       alert(res.data.message);
+    //     }
+    //   }).catch(res => {
+    //     alert('無法加入資料喔～快去看什麼問題吧！')
+    //     console.log(res.data);
+    //   })
+    // },
     addArticle() {
       const apiUrl = `${this.url}/api/${this.path}/admin/article`;
       this.loading = true;
@@ -243,36 +243,36 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    putCoupon(item, action) {
-      let couponObj = {
-        data: {
-          ...item
-        }
-      }
-      const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`;
-      this.loading = true;
-      if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
-        this.tempData[this.currentTab.enName] = {...item}
-        couponObj.data.is_enabled = 1;
-      } else {
-        couponObj.data.is_enabled = 0;
-      }
-      axios.put(apiUrl, couponObj).then(res => {
-        if (res.data.success) {
-          this.loading = false;
-          if (this.tempData.modal) {
-            this.tempData.modal.hide();
-            this.tempData.modal = '';
-          }
-          this.getCoupons();
-        } else {
-          alert(res.data.message);
-        }
-      }).catch(res => {
-        alert('無法修改資料喔～快去看什麼問題吧！')
-        console.log(res.data);
-      })
-    },
+    // putCoupon(item, action) {
+    //   let couponObj = {
+    //     data: {
+    //       ...item
+    //     }
+    //   }
+    //   const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`;
+    //   this.loading = true;
+    //   if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
+    //     this.tempData[this.currentTab.enName] = {...item}
+    //     couponObj.data.is_enabled = 1;
+    //   } else {
+    //     couponObj.data.is_enabled = 0;
+    //   }
+    //   axios.put(apiUrl, couponObj).then(res => {
+    //     if (res.data.success) {
+    //       this.loading = false;
+    //       if (this.tempData.modal) {
+    //         this.tempData.modal.hide();
+    //         this.tempData.modal = '';
+    //       }
+    //       this.getCoupons();
+    //     } else {
+    //       alert(res.data.message);
+    //     }
+    //   }).catch(res => {
+    //     alert('無法修改資料喔～快去看什麼問題吧！')
+    //     console.log(res.data);
+    //   })
+    // },
     putArticle(item, action) {
       let articleObj = {
         data: {
@@ -432,7 +432,8 @@ const App = Vue.createApp({
     },
     editTempData(item) {
       this.tempData[this.currentTab.enName] = {...item};
-      this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      // this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      this.tempData.modal = new bootstrap.Modal(document.getElementById('couponModal'));
       this.tempData.modal.show();
     },
     openDeleteModal(item) {
@@ -489,7 +490,8 @@ const App = Vue.createApp({
     }
   },
   components:{
-    modalDelete
+    modalDelete,
+    modalCoupon
   },
   created() {
     this.checkLogin();
