@@ -1,4 +1,4 @@
-import openDelete from "./bs-modal/delete.js";
+import modalDelete from "./bs-modal/delete.js";
 const App = Vue.createApp({
   data() {
     return {
@@ -489,7 +489,7 @@ const App = Vue.createApp({
     }
   },
   components:{
-    openDelete
+    modalDelete
   },
   created() {
     this.checkLogin();
