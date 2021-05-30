@@ -424,24 +424,7 @@
       </div>
     </div>
     <!-- delete Modal -->
-    <div class="modal fade" ref="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-danger" id="deleteModalLabel">刪除</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p>您是否要刪除[ {{currentTab.name}} ][ {{tempData[currentTab.enName].title}}]?</p> 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-outline-danger" @click="deleteData">
-              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>刪除</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <open-delete id="deleteModal" :tab="currentTab.name" :data="tempData[currentTab.enName].title" :loading="loading" @delete-data="deleteData"></open-delete>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>

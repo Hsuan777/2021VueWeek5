@@ -1,3 +1,4 @@
+import openDelete from "./bs-modal/delete.js";
 const App = Vue.createApp({
   data() {
     return {
@@ -436,7 +437,8 @@ const App = Vue.createApp({
     },
     openDeleteModal(item) {
       this.tempData[this.currentTab.enName] = {...item}
-      this.tempData.modal = new bootstrap.Modal(this.$refs.deleteModal);
+      // this.tempData.modal = new bootstrap.Modal(this.$refs.deleteModal);
+      this.tempData.modal = new bootstrap.Modal(document.getElementById('deleteModal'));
       this.tempData.modal.show();
     },
     deleteData() {
@@ -485,6 +487,9 @@ const App = Vue.createApp({
           break;
       }
     }
+  },
+  components:{
+    openDelete
   },
   created() {
     this.checkLogin();
