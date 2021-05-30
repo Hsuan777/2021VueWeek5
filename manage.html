@@ -209,7 +209,7 @@
                   </td>
                   <td>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}"  @click="getArticle(item.id)">
+                      <button type="button" class="btn btn-warning" :class="{'disabled': item.isPublic}"  @click="getArticle(item.id, 'edit')">
                         修改  
                       </button>
                       <input type="button" value="刪除" class="btn btn-outline-danger" :class="{'disabled': item.isPublic}" @click="openDeleteModal(item)">

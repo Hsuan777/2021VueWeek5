@@ -9,7 +9,7 @@ const App = Vue.createApp({
       displayData: {
         products: true,
       },
-      tabList: ['商品', '訂單', '優惠券', '文章', '圖檔'],
+      tabList: ['商品', '訂單', '優惠券', '文章'],
       currentTab: {
         name: '商品',
         enName:'product'
@@ -36,84 +36,96 @@ const App = Vue.createApp({
   },
   methods: {
     getProducts(page = 1) {
-      axios.get(`${this.url}/api/${this.path}/admin/products?page=${page}`).then(res => {
+      const apiUrl = `${this.url}/api/${this.path}/admin/products?page=${page}`;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.products = res.data.products;
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     getOrders(page = 1) {
-      axios.get(`${this.url}/api/${this.path}/admin/orders?page=${page}`,).then(res => {
+      const apiUrl = `${this.url}/api/${this.path}/admin/orders?page=${page}`;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.orders = res.data.orders;
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
         console.log(res.data);
       })
     },
     getCoupons(page = 1) {
-      axios.get(`${this.url}/api/${this.path}/admin/coupons?page=${page}`,).then(res => {
+      const apiUrl = `${this.url}/api/${this.path}/admin/coupons?page=${page}`;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.coupons = res.data.coupons;
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     getArticles(page = 1) {
-      axios.get(`${this.url}/api/${this.path}/admin/articles?page=${page}`,).then(res => {
+      const apiUrl = `${this.url}/api/${this.path}/admin/articles?page=${page}`;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.articles = res.data.articles;
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     getArticle(itemId, action) {
-      axios.get(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
+      const apiUrl = `${this.url}/api/${this.path}/admin/article/${itemId}`;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
-          this.tempData.article = res.data.article;
           if (action === 'isPublic') {
             this.putArticle(res.data.article, action);
+          } else if (action === 'edit') {
+            this.editTempData(res.data.article);
           }
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     addProduct() {
-      this.loading = true;
+      const apiUrl = `${this.url}/api/${this.path}/admin/product`;
       let productObj = {
         data: {
           ...this.tempData.product
         }
       }
-      axios.post(`${this.url}/api/${this.path}/admin/product`, productObj).then(res => {
+      this.loading = true;
+      axios.post(apiUrl, productObj).then(res => {
         if (res.data.success) {
           this.loading = false;
           this.tempData.modal.hide();
           this.getProducts();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法加入資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     addCoupon() {
-      this.loading = true;
+      const apiUrl = `${this.url}/api/${this.path}/admin/coupon`;
       let date = new Date();
       let couponObj = {
         data: {
@@ -125,22 +137,25 @@ const App = Vue.createApp({
         date.setDate(date.getDate() + num);
         couponObj.data['due_date'] = date.getTime();
       }
+      this.loading = true;
       // 暫時設定往後 30 天，之後改成可選日期
       setDueDate(30);
       couponObj.data['is_enabled'] = 0;
-      axios.post(`${this.url}/api/${this.path}/admin/coupon`, couponObj).then(res => {
+      axios.post(apiUrl, couponObj).then(res => {
         if (res.data.success) {
           this.loading = false;
           this.tempData.modal.hide()
           this.getCoupons();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法加入資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     addArticle() {
+      const apiUrl = `${this.url}/api/${this.path}/admin/article`;
       this.loading = true;
       let date = new Date();
       let articleObj = {
@@ -150,43 +165,47 @@ const App = Vue.createApp({
       }
       articleObj.data.create_at = date.getTime();
       articleObj.data.isPublic = false;
-      axios.post(`${this.url}/api/${this.path}/admin/article`, articleObj).then(res => {
+      axios.post(apiUrl, articleObj).then(res => {
         if (res.data.success) {
           this.loading = false;
           this.tempData.modal.hide()
           this.getArticles();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法加入資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     addImageToUpload() {
+      const apiUrl = `${this.url}/api/${this.path}/admin/upload`;
       let tempImageFile = this.$refs.uploadImage.files[0]
       const formData = new FormData();
       formData.append('file', tempImageFile);
-      axios.post(`${this.url}/api/${this.path}/admin/upload`, formData).then(res => {
+      axios.post(apiUrl, formData).then(res => {
         if (res.data.success) {
           this.getImage();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法加入資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     putProduct(item, action) {
-      this.loading = true;
       let productObj = {
         data: {
           ...item
         }
       }
+      const apiUrl = `${this.url}/api/${this.path}/admin/product/${productObj.data.id}`;
+      this.loading = true;
       if (action === 'isEnabled') {
         productObj.data.is_enabled = !productObj.data.is_enabled;
       }
-      axios.put(`${this.url}/api/${this.path}/admin/product/${productObj.data.id}`, productObj).then(res => {
+      axios.put(apiUrl, productObj).then(res => {
         if (res.data.success) {
           this.loading = false;
           if (this.tempData.modal) {
@@ -195,9 +214,10 @@ const App = Vue.createApp({
           }
           this.getProducts();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法修改資料喔～快去看什麼問題吧！')
         console.log(res);
       })
     },
@@ -207,32 +227,35 @@ const App = Vue.createApp({
           ...item
         }
       }
+      const apiUrl = `${this.url}/api/${this.path}/admin/order/${orderObj.data.id}`;
       if (action === 'isPaid') {
         orderObj.data.is_paid = !orderObj.data.is_paid
       }
-      axios.put(`${this.url}/api/${this.path}/admin/order/${orderObj.data.id}`, orderObj).then(res => {
+      axios.put(apiUrl, orderObj).then(res => {
         if (res.data.success) {
           this.getOrders();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法修改資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     putCoupon(item, action) {
-      this.loading = true;
       let couponObj = {
         data: {
           ...item
         }
       }
+      const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`;
+      this.loading = true;
       if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
         couponObj.data.is_enabled = 1;
       } else {
         couponObj.data.is_enabled = 0;
       }
-      axios.put(`${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`, couponObj).then(res => {
+      axios.put(apiUrl, couponObj).then(res => {
         if (res.data.success) {
           this.loading = false;
           if (this.tempData.modal) {
@@ -241,23 +264,25 @@ const App = Vue.createApp({
           }
           this.getCoupons();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法修改資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     putArticle(item, action) {
-      this.loading = true;
       let articleObj = {
         data: {
           ...item
         }
       }
+      const apiUrl = `${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`;
+      this.loading = true;
       if (action === 'isPublic') {
         articleObj.data.isPublic = !articleObj.data.isPublic;
       } 
-      axios.put(`${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`, articleObj).then(res => {
+      axios.put(apiUrl, articleObj).then(res => {
         if (res.data.success) {
           this.loading = false;
           if (this.tempData.modal) {
@@ -266,51 +291,58 @@ const App = Vue.createApp({
           }
           this.getArticles();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法修改資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     deleteProduct(itemId) {
+      const apiUrl = `${this.url}/api/${this.path}/admin/product/${itemId}`;
       this.loading = true;
-      axios.delete(`${this.url}/api/${this.path}/admin/product/${itemId}`).then(res => {
+      axios.delete(apiUrl).then(res => {
         if (res.data.success) {
           this.loading = false;
           this.tempData.modal.hide();
           this.getProducts();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法刪除資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     deleteCoupon(itemId) {
+      const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${itemId}`;
       this.loading = true;
-      axios.delete(`${this.url}/api/${this.path}/admin/coupon/${itemId}`).then(res => {
+      axios.delete(apiUrl).then(res => {
         if (res.data.success) {
           this.loading = false;
           this.tempData.modal.hide();
           this.getCoupons();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法刪除資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     deleteArticle(itemId) {
+      const apiUrl = `${this.url}/api/${this.path}/admin/article/${itemId}`;
       this.loading = true;
-      axios.delete(`${this.url}/api/${this.path}/admin/article/${itemId}`).then(res => {
+      axios.delete(apiUrl).then(res => {
         if (res.data.success) {
           this.loading = false;
           this.tempData.modal.hide();
           this.getArticles();
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法刪除資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
@@ -356,43 +388,38 @@ const App = Vue.createApp({
             this.displayData.images = false;
             this.getArticles()
             break;
-          case '圖檔':
-            this.currentTab.name = item;
-            this.currentTab.enName = 'image';
-            this.displayData.products = false;
-            this.displayData.orders = false;
-            this.displayData.coupons = false;
-            this.displayData.articles = false;
-            this.displayData.images = true;
-            break;
         }
       }
     },
     logOut() {
-      axios.post(`${this.url}/logout`).then(res => {
+      const apiUrl = `${this.url}/logout`;
+      axios.post(apiUrl).then(res => {
         if (res.data.success) {
           document.cookie = `hexToken=; expires=; path=/`;
           this.hasLogin = false
           window.location.replace('./index.html') ;
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法登出喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
     checkLogin() {
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+      const apiUrl = `${this.url}/api/user/check`;
       axios.defaults.headers.common['Authorization'] = token;
-      axios.post(`${this.url}/api/user/check`).then(res => {
+      axios.post(apiUrl).then(res => {
         if (res.data.success) {
           this.hasLogin = true;
           this.getProducts();
         } else {
           window.location.replace('./index.html');
-          console.log(res.data.message);
+          alert(res.data.message);
         }
       }).catch(res => {
+        alert('無法登入喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
