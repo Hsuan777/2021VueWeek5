@@ -28,6 +28,7 @@ const App = Vue.createApp({
           images: []
         },
         productPages: 0,
+        currentPage: 1,
         coupon: {},
         article: {
           tag:[],
@@ -38,8 +39,9 @@ const App = Vue.createApp({
     };
   },
   methods: {
-    getProducts(page = 1) {
+    getProducts(page = this.tempData.currentPage) {
       const apiUrl = `${this.url}/api/${this.path}/admin/products?page=${page}`;
+      this.tempData.currentPage = page;
       axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.products = res.data.products;
