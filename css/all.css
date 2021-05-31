@@ -11074,4 +11074,9 @@ a {
   border-color: #8CACD3;
   background-color: #8CACD3;
 }
+
+.page-item.active .page-link {
+  border-color: #8CACD3;
+  background-color: #8CACD3;
+}
 /*# sourceMappingURL=all.css.map */

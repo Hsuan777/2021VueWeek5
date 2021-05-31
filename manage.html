@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="css/all.css">
   <title>後台管理</title>
 </head>
@@ -34,14 +35,15 @@
       <!-- 項目列表 -->
       <div class="card">
         <!-- 功能頁籤與搜尋欄 -->
-        <header class="card-header d-flex align-items-end">
+        <header class="card-header d-flex justify-content-between align-items-end">
           <ul class="nav nav-tabs card-header-tabs" role="tablist">
             <li class="nav-item" v-for:="item in tabList" :key="item" @click="selectTab(item)">
               <a class="nav-link" :class="{'active': item === currentTab.name }">{{item}}</a>
             </li>
           </ul>
+          <page :pages="tempData.productPages" @page-num="getProducts"></page>
           <!-- 搜尋欄，待修正 -->
-          <div class="form-floating ms-auto">
+          <div class="form-floating">
             <input class="form-control" list="datalistOptions" id="searchData" placeholder="Type to search...">
             <label for="searchData">搜尋{{currentTab.name}}...</label>
             <datalist id="datalistOptions">

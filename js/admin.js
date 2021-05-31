@@ -2,6 +2,7 @@ import modalDelete from "./bs-modal/delete.js";
 import modalCoupon from "./bs-modal/coupon.js";
 import modalArticle from "./bs-modal/article.js";
 import modalProduct from "./bs-modal/product.js";
+import page from "./tool/pagination.js";
 const App = Vue.createApp({
   data() {
     return {
@@ -26,6 +27,7 @@ const App = Vue.createApp({
         product: {
           images: []
         },
+        productPages: 0,
         coupon: {},
         article: {
           tag:[],
@@ -47,6 +49,19 @@ const App = Vue.createApp({
       }).catch(res => {
         alert('無法取得資料喔～快去看什麼問題吧！')
         console.log(res.data);
+      })
+    },
+    getProductsAll() {
+      const apiUrl = `${this.url}/api/${this.path}/admin/products/all`;
+      axios.get(apiUrl).then(res => {
+        if (res.data.success) {
+          this.tempData.productPages = Math.ceil(Object.keys(res.data.products).length / 10) 
+        } else {
+          alert('取得資料錯誤，快去看什麼問題吧！')
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res);
       })
     },
     getOrders(page = 1) {
@@ -334,6 +349,7 @@ const App = Vue.createApp({
         if (res.data.success) {
           this.hasLogin = true;
           this.getProducts();
+          this.getProductsAll();
         } else {
           window.location.replace('./index.html');
           alert(res.data.message);
@@ -378,7 +394,8 @@ const App = Vue.createApp({
     modalDelete,
     modalCoupon,
     modalArticle,
-    modalProduct
+    modalProduct,
+    page
   },
   created() {
     this.checkLogin();
