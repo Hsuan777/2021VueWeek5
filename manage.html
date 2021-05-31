@@ -233,7 +233,8 @@
     </section>
     <!-- Modal -->
     <!-- add/edit 產品 -->
-    <div class="modal fade" ref="productModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <modal-product id="productModal" :temp-data="{...tempData.product}" :modal="tempData.modal" @update="getProducts"></modal-coupon>
+    <!-- <div class="modal fade" ref="productModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -280,11 +281,9 @@
                 <div class="col-12">
                   <div class="d-flex align-items-center mb-2">
                     <label for="productImageUrl" class="form-label mb-0">主圖網址</label>
-                    <!-- 加入額外圖片 -->
                     <input type="button" class="btn btn-primary btn-sm ms-2" value="Add Image" @click="addProductImage">
                   </div>
                   <input type="text" id="productImageUrl" class="form-control mb-3" placeholder="網址" v-model="tempData.product.imageUrl">
-                  <!-- 額外圖片輸入 -->
                   <template v-for="(item, i) in tempData.product.imagesUrl" :key="'productImageUrl' + i">
                     <label :for="'productImageUrl' + i" class="form-label">其他圖片網址 {{i + 1}}</label>
                     <div class="input-group mb-3">
@@ -293,12 +292,10 @@
                     </div>
                   </template>
                 </div>
-                <!-- 主圖預覽 -->
                 <div class="col-4">
                   <label for="" class="form-label">主圖</label>
                   <img class="img-thumbnail" :src="tempData.product.imageUrl" :alt="tempData.product.title">
                 </div>
-                <!-- 其他圖片預覽 -->
                 <template v-if="tempData.product.imagesUrl">
                   <div class="col-4" v-for="(item, key) in tempData.product.imagesUrl" :key="item">
                     <label for="" class="form-label">其他圖片 {{key + 1}}</label>
@@ -308,7 +305,6 @@
               </div>
             </div>
             <div class="modal-footer">
-              <!-- 若有錯誤則阻止新增 -->
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary"  @click="addProduct" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.product.id === undefined">
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>新增</button>
@@ -318,7 +314,7 @@
           </v-form>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- add/edit 優惠券 -->
     <modal-coupon id="couponModal" :temp-data="{...tempData.coupon}" :modal="tempData.modal" @update="getCoupons"></modal-coupon>
     <!-- <div class="modal fade" ref="couponModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">

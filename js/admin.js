@@ -1,6 +1,7 @@
 import modalDelete from "./bs-modal/delete.js";
 import modalCoupon from "./bs-modal/coupon.js";
 import modalArticle from "./bs-modal/article.js";
+import modalProduct from "./bs-modal/product.js";
 const App = Vue.createApp({
   data() {
     return {
@@ -104,27 +105,27 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    addProduct() {
-      const apiUrl = `${this.url}/api/${this.path}/admin/product`;
-      let productObj = {
-        data: {
-          ...this.tempData.product,
-        }
-      }
-      this.loading = true;
-      axios.post(apiUrl, productObj).then(res => {
-        if (res.data.success) {
-          this.loading = false;
-          this.tempData.modal.hide();
-          this.getProducts();
-        } else {
-          alert(res.data.message);
-        }
-      }).catch(res => {
-        alert('無法加入資料喔～快去看什麼問題吧！')
-        console.log(res.data);
-      })
-    },
+    // addProduct() {
+    //   const apiUrl = `${this.url}/api/${this.path}/admin/product`;
+    //   let productObj = {
+    //     data: {
+    //       ...this.tempData.product,
+    //     }
+    //   }
+    //   this.loading = true;
+    //   axios.post(apiUrl, productObj).then(res => {
+    //     if (res.data.success) {
+    //       this.loading = false;
+    //       this.tempData.modal.hide();
+    //       this.getProducts();
+    //     } else {
+    //       alert(res.data.message);
+    //     }
+    //   }).catch(res => {
+    //     alert('無法加入資料喔～快去看什麼問題吧！')
+    //     console.log(res.data);
+    //   })
+    // },
     // addCoupon() {
     //   const apiUrl = `${this.url}/api/${this.path}/admin/coupon`;
     //   let date = new Date();
@@ -195,7 +196,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    putProduct(item, action) {
+    putProduct(item) {
       let productObj = {
         data: {
           ...item
@@ -203,17 +204,12 @@ const App = Vue.createApp({
       }
       const apiUrl = `${this.url}/api/${this.path}/admin/product/${productObj.data.id}`;
       this.loading = true;
-      if (action === 'isEnabled') {
-        this.tempData[this.currentTab.enName] = {...item}
-        productObj.data.is_enabled = !productObj.data.is_enabled;
-      }
+      this.tempData[this.currentTab.enName].id = item.id
+      productObj.data.is_enabled = !productObj.data.is_enabled;
       axios.put(apiUrl, productObj).then(res => {
         if (res.data.success) {
           this.loading = false;
-          if (this.tempData.modal) {
-            this.tempData.modal.hide();
-            this.tempData.modal = '';
-          }
+          this.tempData[this.currentTab.enName] = {}
           this.getProducts();
         } else {
           alert(res.data.message);
@@ -473,7 +469,8 @@ const App = Vue.createApp({
   components:{
     modalDelete,
     modalCoupon,
-    modalArticle
+    modalArticle,
+    modalProduct
   },
   created() {
     this.checkLogin();
