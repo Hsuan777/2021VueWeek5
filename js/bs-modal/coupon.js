@@ -2,28 +2,21 @@ export default {
     // 元件自有變數
     data() {
       return {
-        // tempData: this.parentData,
         url: 'https://vue3-course-api.hexschool.io',
         path: 'vs',
         loading: false,
       }
     },
     // 外面傳遞資料進來，再用 $emit('自訂名稱', 要送的資料)傳出去
-    // props: ['parentData'],
-    props: ['tempData'],
+    props: ['tempData', 'modal'],
     // 元件自有方法
     methods:{
-      aaa() {
-        this.tempData = this.parentData
-        console.log(this.tempData);
-        console.log(this.parentData);
-      },
-      addCoupon() {
+      addCoupon(item) {
         const apiUrl = `${this.url}/api/${this.path}/admin/coupon`;
         let date = new Date();
         let couponObj = {
           data: {
-            ...this.tempData
+            ...item
           }
         }
         const setDueDate = (num) => {
@@ -38,8 +31,8 @@ export default {
         axios.post(apiUrl, couponObj).then(res => {
           if (res.data.success) {
             this.loading = false;
-            // this.tempData.modal.hide()
-            this.getCoupons();
+            this.modal.hide();
+            this.$emit('update');
           } else {
             alert(res.data.message);
           }
@@ -48,7 +41,7 @@ export default {
           console.log(res.data);
         })
       },
-      putCoupon(item, action) {
+      putCoupon(item) {
         let couponObj = {
           data: {
             ...item
@@ -56,19 +49,11 @@ export default {
         }
         const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`;
         this.loading = true;
-        if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
-          couponObj.data.is_enabled = 1;
-        } else {
-          couponObj.data.is_enabled = 0;
-        }
         axios.put(apiUrl, couponObj).then(res => {
           if (res.data.success) {
             this.loading = false;
-            if (this.tempData.modal) {
-              this.tempData.modal.hide();
-              this.tempData.modal = '';
-            }
-            this.getCoupons();
+            this.modal.hide();
+            this.$emit('update');
           } else {
             alert(res.data.message);
           }
@@ -83,16 +68,24 @@ export default {
         requiredProps = ['title', 'percent', 'code'];
         hasAll = requiredProps.every(prop => this.tempData.hasOwnProperty(prop));
         return !hasAll
-      }
+      },
+    },
+    // 監聽單一變數，變數名稱(新值, 舊值)，預設第一個參數為新值
+    watch: {
+      tempData(newValue) {
+        if (!newValue.id) {
+          this.$refs['couponForm'].resetForm();
+        }
+      },
     },
     template:`
-    <div class="modal fade" ref="couponModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal fade" id="couponForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-primary" id="couponModalLabel" v-if="tempData.id === undefined">新增優惠券</h5>
-            <h5 class="modal-title" id="couponModalLabel" v-else>修改優惠券</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 class="modal-title text-primary" id="couponModalLabel" v-if="!tempData.id">新增優惠券</h5>
+              <h5 class="modal-title" id="couponModalLabel" v-else>修改優惠券</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <v-form action="" v-slot="{ errors }" ref="couponForm">
             <div class="modal-body">
@@ -115,9 +108,8 @@ export default {
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" @click="aaa">Close</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" @click="addCoupon" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.id === undefined">
+              <button type="button" class="btn btn-primary" @click="addCoupon(tempData)" :disabled="checkProps() || Object.keys(errors).length !== 0" v-if="tempData.id === undefined">
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>新增</button>
               <button type="button" class="btn btn-warning" @click="putCoupon(tempData)" :disabled="Object.keys(errors).length !== 0" v-else>
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading"></span>修改</button>

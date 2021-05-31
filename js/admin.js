@@ -243,36 +243,33 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    // putCoupon(item, action) {
-    //   let couponObj = {
-    //     data: {
-    //       ...item
-    //     }
-    //   }
-    //   const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`;
-    //   this.loading = true;
-    //   if (action === 'isEnabled' && couponObj.data.is_enabled === 0) {
-    //     this.tempData[this.currentTab.enName] = {...item}
-    //     couponObj.data.is_enabled = 1;
-    //   } else {
-    //     couponObj.data.is_enabled = 0;
-    //   }
-    //   axios.put(apiUrl, couponObj).then(res => {
-    //     if (res.data.success) {
-    //       this.loading = false;
-    //       if (this.tempData.modal) {
-    //         this.tempData.modal.hide();
-    //         this.tempData.modal = '';
-    //       }
-    //       this.getCoupons();
-    //     } else {
-    //       alert(res.data.message);
-    //     }
-    //   }).catch(res => {
-    //     alert('無法修改資料喔～快去看什麼問題吧！')
-    //     console.log(res.data);
-    //   })
-    // },
+    putCoupon(item) {
+      let couponObj = {
+        data: {
+          ...item
+        }
+      }
+      const apiUrl = `${this.url}/api/${this.path}/admin/coupon/${couponObj.data.id}`;
+      this.loading = true;
+      this.tempData[this.currentTab.enName].id = item.id
+      if (couponObj.data.is_enabled === 0) {
+        couponObj.data.is_enabled = 1;
+      } else {
+        couponObj.data.is_enabled = 0;
+      }
+      axios.put(apiUrl, couponObj).then(res => {
+        if (res.data.success) {
+          this.loading = false;
+          this.tempData[this.currentTab.enName] = {}
+          this.getCoupons();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法修改資料喔～快去看什麼問題吧！')
+        console.log(res.data);
+      })
+    },
     putArticle(item, action) {
       let articleObj = {
         data: {
@@ -426,14 +423,15 @@ const App = Vue.createApp({
     },
     addTempData() {
       this.tempData[this.currentTab.enName] = {}; 
-      this.$refs[this.currentTab.enName + 'Form'].resetForm();
-      this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      // this.$refs[this.currentTab.enName + 'Form'].resetForm();
+      // this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
     editTempData(item) {
       this.tempData[this.currentTab.enName] = {...item};
       // this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
-      this.tempData.modal = new bootstrap.Modal(document.getElementById('couponModal'));
+      this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
     openDeleteModal(item) {
@@ -474,11 +472,6 @@ const App = Vue.createApp({
         case '商品':
           requiredProps = ['title', 'origin_price', 'price', 'category', 'unit'];
           hasAll = requiredProps .every(prop => this.tempData.product.hasOwnProperty(prop));
-          return !hasAll
-          break;
-        case '優惠券':
-          requiredProps = ['title', 'percent', 'code'];
-          hasAll = requiredProps .every(prop => this.tempData.coupon.hasOwnProperty(prop));
           return !hasAll
           break;
         case '文章':
