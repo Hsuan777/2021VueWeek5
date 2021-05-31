@@ -110,6 +110,11 @@ export default {
                   <v-field id="productUnit" name="單位" type="text" class="form-control" :class="{ 'is-invalid': errors['單位'] }" rules="required" v-model="tempData.unit"></v-field>
                   <error-message name="單位" class="invalid-feedback"></error-message>
                 </div>
+                <div class="col">
+                  <label for="productStart" class="form-label">推薦等級<span class="text-danger">*</span></label>
+                  <v-field id="productStarts" name="推薦等級" type="number" class="form-control" :class="{ 'is-invalid': errors['推薦等級'] }" rules="min_value:0" v-model="tempData.starts"></v-field>
+                  <error-message name="推薦等級" class="invalid-feedback"></error-message>
+                </div>
                 <div class="col-12">
                   <div class="d-flex align-items-center mb-2">
                     <label for="productImageUrl" class="form-label mb-0">主圖網址</label>

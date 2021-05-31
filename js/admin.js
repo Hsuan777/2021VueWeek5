@@ -364,7 +364,7 @@ const App = Vue.createApp({
     addTempData() {
       this.tempData[this.currentTab.enName] = {};
       this.tempData.article = {tag:[]}; 
-      this.tempData.product = {imagesUrl:[]};
+      this.tempData.product = {imagesUrl:[], options: {}};
       this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
