@@ -21,7 +21,6 @@ const App = Vue.createApp({
         orders: [],
         coupons: [],
         articles: [],
-        images: [],
       },
       tempData: {
         product: {
@@ -105,81 +104,6 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    // addProduct() {
-    //   const apiUrl = `${this.url}/api/${this.path}/admin/product`;
-    //   let productObj = {
-    //     data: {
-    //       ...this.tempData.product,
-    //     }
-    //   }
-    //   this.loading = true;
-    //   axios.post(apiUrl, productObj).then(res => {
-    //     if (res.data.success) {
-    //       this.loading = false;
-    //       this.tempData.modal.hide();
-    //       this.getProducts();
-    //     } else {
-    //       alert(res.data.message);
-    //     }
-    //   }).catch(res => {
-    //     alert('無法加入資料喔～快去看什麼問題吧！')
-    //     console.log(res.data);
-    //   })
-    // },
-    // addCoupon() {
-    //   const apiUrl = `${this.url}/api/${this.path}/admin/coupon`;
-    //   let date = new Date();
-    //   let couponObj = {
-    //     data: {
-    //       ...this.tempData.coupon
-    //     }
-    //   }
-    //   const setDueDate = (num) => {
-    //     // setDate 會變更現在日期，例如當月 23 號，setDate(30)，會變成當月 30 號
-    //     date.setDate(date.getDate() + num);
-    //     couponObj.data['due_date'] = date.getTime();
-    //   }
-    //   this.loading = true;
-    //   // 暫時設定往後 30 天，之後改成可選日期
-    //   setDueDate(30);
-    //   couponObj.data['is_enabled'] = 0;
-    //   axios.post(apiUrl, couponObj).then(res => {
-    //     if (res.data.success) {
-    //       this.loading = false;
-    //       this.tempData.modal.hide()
-    //       this.getCoupons();
-    //     } else {
-    //       alert(res.data.message);
-    //     }
-    //   }).catch(res => {
-    //     alert('無法加入資料喔～快去看什麼問題吧！')
-    //     console.log(res.data);
-    //   })
-    // },
-    // addArticle() {
-    //   const apiUrl = `${this.url}/api/${this.path}/admin/article`;
-    //   this.loading = true;
-    //   let date = new Date();
-    //   let articleObj = {
-    //     data: {
-    //       ...this.tempData.article
-    //     }
-    //   }
-    //   articleObj.data.create_at = date.getTime();
-    //   articleObj.data.isPublic = false;
-    //   axios.post(apiUrl, articleObj).then(res => {
-    //     if (res.data.success) {
-    //       this.loading = false;
-    //       this.tempData.modal.hide()
-    //       this.getArticles();
-    //     } else {
-    //       alert(res.data.message);
-    //     }
-    //   }).catch(res => {
-    //     alert('無法加入資料喔～快去看什麼問題吧！')
-    //     console.log(res.data);
-    //   })
-    // },
     addImageToUpload() {
       const apiUrl = `${this.url}/api/${this.path}/admin/upload`;
       let tempImageFile = this.$refs.uploadImage.files[0]
@@ -196,6 +120,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    // 更新是否啟用
     putProduct(item) {
       let productObj = {
         data: {
@@ -240,7 +165,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    // 只更新是否啟用
+    // 更新是否啟用
     putCoupon(item) {
       let couponObj = {
         data: {
@@ -268,7 +193,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    // 只更新是否啟用
+    // 更新是否啟用
     putArticle(item, action) {
       let articleObj = {
         data: {
@@ -431,7 +356,7 @@ const App = Vue.createApp({
       this.tempData.modal.show();
     },
     openDeleteModal(item) {
-      this.tempData[this.currentTab.enName] = {...item}
+      this.tempData[this.currentTab.enName] = {...item};
       this.tempData.modal = new bootstrap.Modal(document.getElementById('deleteModal'));
       this.tempData.modal.show();
     },
@@ -448,23 +373,6 @@ const App = Vue.createApp({
           break;
       }
     },
-    addProductImage() {
-      if (!this.tempData.product.imagesUrl) {
-        this.tempData.product.imagesUrl = [];
-      } 
-      this.tempData.product.imagesUrl.push('');
-    },
-    checkProps() {
-      let requiredProps = [];
-      let hasAll = null;
-      switch (this.currentTab.name) {
-        case '商品':
-          requiredProps = ['title', 'origin_price', 'price', 'category', 'unit'];
-          hasAll = requiredProps .every(prop => this.tempData.product.hasOwnProperty(prop));
-          return !hasAll
-          break;
-      }
-    }
   },
   components:{
     modalDelete,
