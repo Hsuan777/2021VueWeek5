@@ -361,7 +361,8 @@
       </div>
     </div> -->
     <!-- add/edit 文章 -->
-    <div class="modal fade" ref="articleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+    <modal-article id="articleModal" :temp-data="{...tempData.article}" :modal="tempData.modal" @update="getArticles"></modal-article>
+    <!-- <div class="modal fade" ref="articleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -389,11 +390,9 @@
                 <div class="col-12">
                   <div class="d-flex align-items-center mb-2">
                     <label for="articleTag" class="form-label mb-0">Tag</label>
-                    <!-- 加入 tag -->
                     <input type="button" class="btn btn-primary btn-sm ms-2" value="Add Tag" @click="addArticleTag">
                   </div>
                 </div>
-                <!-- 輸入 tag -->
                 <template v-if="tempData.article.tag">
                   <div class="col-4" v-for="(item, i) in tempData.article.tag" :key="item+i">
                     <div class="input-group mb-3">
@@ -419,7 +418,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- delete Modal -->
     <modal-delete id="deleteModal" :tab="currentTab.name" :data="tempData[currentTab.enName].title" :loading="loading" @delete-data="deleteData"></modal-delete>
   </div>

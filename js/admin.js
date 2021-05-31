@@ -1,5 +1,6 @@
 import modalDelete from "./bs-modal/delete.js";
 import modalCoupon from "./bs-modal/coupon.js";
+import modalArticle from "./bs-modal/article.js";
 const App = Vue.createApp({
   data() {
     return {
@@ -107,7 +108,7 @@ const App = Vue.createApp({
       const apiUrl = `${this.url}/api/${this.path}/admin/product`;
       let productObj = {
         data: {
-          ...this.tempData.product
+          ...this.tempData.product,
         }
       }
       this.loading = true;
@@ -154,30 +155,30 @@ const App = Vue.createApp({
     //     console.log(res.data);
     //   })
     // },
-    addArticle() {
-      const apiUrl = `${this.url}/api/${this.path}/admin/article`;
-      this.loading = true;
-      let date = new Date();
-      let articleObj = {
-        data: {
-          ...this.tempData.article
-        }
-      }
-      articleObj.data.create_at = date.getTime();
-      articleObj.data.isPublic = false;
-      axios.post(apiUrl, articleObj).then(res => {
-        if (res.data.success) {
-          this.loading = false;
-          this.tempData.modal.hide()
-          this.getArticles();
-        } else {
-          alert(res.data.message);
-        }
-      }).catch(res => {
-        alert('無法加入資料喔～快去看什麼問題吧！')
-        console.log(res.data);
-      })
-    },
+    // addArticle() {
+    //   const apiUrl = `${this.url}/api/${this.path}/admin/article`;
+    //   this.loading = true;
+    //   let date = new Date();
+    //   let articleObj = {
+    //     data: {
+    //       ...this.tempData.article
+    //     }
+    //   }
+    //   articleObj.data.create_at = date.getTime();
+    //   articleObj.data.isPublic = false;
+    //   axios.post(apiUrl, articleObj).then(res => {
+    //     if (res.data.success) {
+    //       this.loading = false;
+    //       this.tempData.modal.hide()
+    //       this.getArticles();
+    //     } else {
+    //       alert(res.data.message);
+    //     }
+    //   }).catch(res => {
+    //     alert('無法加入資料喔～快去看什麼問題吧！')
+    //     console.log(res.data);
+    //   })
+    // },
     addImageToUpload() {
       const apiUrl = `${this.url}/api/${this.path}/admin/upload`;
       let tempImageFile = this.$refs.uploadImage.files[0]
@@ -243,6 +244,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    // 只更新是否啟用
     putCoupon(item) {
       let couponObj = {
         data: {
@@ -270,6 +272,7 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    // 只更新是否啟用
     putArticle(item, action) {
       let articleObj = {
         data: {
@@ -278,6 +281,7 @@ const App = Vue.createApp({
       }
       const apiUrl = `${this.url}/api/${this.path}/admin/article/${articleObj.data.id}`;
       this.loading = true;
+      this.tempData[this.currentTab.enName].id = item.id
       if (action === 'isPublic') {
         this.tempData[this.currentTab.enName] = {...item}
         articleObj.data.isPublic = !articleObj.data.isPublic;
@@ -285,10 +289,7 @@ const App = Vue.createApp({
       axios.put(apiUrl, articleObj).then(res => {
         if (res.data.success) {
           this.loading = false;
-          if (this.tempData.modal) {
-            this.tempData.modal.hide();
-            this.tempData.modal = '';
-          }
+          this.tempData[this.currentTab.enName] = {}
           this.getArticles();
         } else {
           alert(res.data.message);
@@ -422,21 +423,19 @@ const App = Vue.createApp({
       })
     },
     addTempData() {
-      this.tempData[this.currentTab.enName] = {}; 
-      // this.$refs[this.currentTab.enName + 'Form'].resetForm();
-      // this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
+      this.tempData[this.currentTab.enName] = {};
+      this.tempData.article = {tag:[]}; 
+      this.tempData.product = {imagesUrl:[]};
       this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
     editTempData(item) {
       this.tempData[this.currentTab.enName] = {...item};
-      // this.tempData.modal = new bootstrap.Modal(this.$refs[this.currentTab.enName + 'Modal']);
       this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
     openDeleteModal(item) {
       this.tempData[this.currentTab.enName] = {...item}
-      // this.tempData.modal = new bootstrap.Modal(this.$refs.deleteModal);
       this.tempData.modal = new bootstrap.Modal(document.getElementById('deleteModal'));
       this.tempData.modal.show();
     },
@@ -459,12 +458,6 @@ const App = Vue.createApp({
       } 
       this.tempData.product.imagesUrl.push('');
     },
-    addArticleTag() {
-      if (!this.tempData.article.tag) {
-        this.tempData.article.tag = [];
-      }
-      this.tempData.article.tag.push('');
-    },
     checkProps() {
       let requiredProps = [];
       let hasAll = null;
@@ -474,17 +467,13 @@ const App = Vue.createApp({
           hasAll = requiredProps .every(prop => this.tempData.product.hasOwnProperty(prop));
           return !hasAll
           break;
-        case '文章':
-          requiredProps = ['title', 'author', 'content'];
-          hasAll = requiredProps .every(prop => this.tempData.article.hasOwnProperty(prop));
-          return !hasAll
-          break;
       }
     }
   },
   components:{
     modalDelete,
-    modalCoupon
+    modalCoupon,
+    modalArticle
   },
   created() {
     this.checkLogin();
