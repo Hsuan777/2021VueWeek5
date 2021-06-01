@@ -4,6 +4,9 @@ td {
 p {
   color: #363B48;
 }
+img {
+  object-fit: contain;
+}
 a {
   color: map-get($theme-colors, 'primary');
 }

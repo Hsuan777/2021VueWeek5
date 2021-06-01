@@ -41,7 +41,8 @@
               <a class="nav-link" :class="{'active': item === currentTab.name }">{{item}}</a>
             </li>
           </ul>
-          <page :pages="tempData.productPages" @page-num="getProducts"></page>
+          <!-- 分頁 -->
+          <page :pages="tempData.productPages" @page-num="getProducts" v-show="currentTab.name === '商品'"></page>
           <!-- 搜尋欄，待修正 -->
           <div class="form-floating">
             <input class="form-control" list="datalistOptions" id="searchData" placeholder="Type to search...">
@@ -74,7 +75,7 @@
                 <tr v-for="item in originData.products" :key="item.id" :class="{'table-success': item.is_enabled}">
                   <td>{{item.category}}</td>
                   <td>
-                    <img :src="item.imageUrl" :alt="item.title" style="width: 100px;" class="img-thumbnail">
+                    <img :src="item.imageUrl" :alt="item.title" style="width: 120px; height: 100px;" class="img-thumbnail">
                   </td>
                   <td>{{item.title}}</td>
                   <td class="text-start">{{item.description}}</td>
