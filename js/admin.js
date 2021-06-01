@@ -370,6 +370,13 @@ const App = Vue.createApp({
     },
     editTempData(item) {
       this.tempData[this.currentTab.enName] = {...item};
+      // 避免傳入時元件內新增的屬性 proxy 抓不到，在這邊先建立好
+      if (!this.tempData.article.tag) {
+        this.tempData.article.tag = [];
+      }
+      if (!this.tempData.product.imagesUrl) {
+        this.tempData.product.imagesUrl = [];
+      }
       this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
