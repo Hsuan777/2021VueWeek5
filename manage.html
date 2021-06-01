@@ -82,7 +82,7 @@
                   <td>{{item.price}}</td>
                   <td class="align-middle">
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @click="putProduct(item, 'isEnabled')">
+                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @change="putProduct(item, 'isEnabled')">
                       <label class="form-check-label" :for="item.id">
                         {{item.is_enabled ? '已啟用' : '未啟用'}}
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
@@ -132,7 +132,7 @@
                   <td>{{item.total}}</td>
                   <td>
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_paid" @click="putOrder(item, 'isPaid')">
+                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_paid" @change="putOrder(item, 'isPaid')">
                       <label class="form-check-label" :for="item.id">
                         {{item.is_paid ? '已付款' : '未付款'}}
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
@@ -172,7 +172,7 @@
                   <td>{{new Date(item.due_date).toLocaleString()}}</td>
                   <td>
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @click="putCoupon(item)">
+                      <input class="form-check-input" type="checkbox" :id="item.id" :checked="item.is_enabled" @change="putCoupon(item)">
                       <label class="form-check-label" :for="item.id">
                         {{item.is_enabled ? '已啟用' : '未啟用'}}
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
@@ -212,7 +212,7 @@
                   <td>{{item.author}}</td>
                   <td>
                     <div class="form-check form-switch d-flex justify-content-center">
-                      <input class="form-check-input me-2" type="checkbox" :id="item.id" :checked="item.isPublic" @click="getArticle(item.id, 'isPublic')">
+                      <input class="form-check-input me-2" type="checkbox" :id="item.id" :checked="item.isPublic" @change="getArticle(item.id, 'isPublic')">
                       <label class="form-check-label" :for="item.id">
                         {{item.isPublic ? '已啟用' : '未啟用'}}
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" v-if="loading && item.id === tempData[currentTab.enName].id"></span>
