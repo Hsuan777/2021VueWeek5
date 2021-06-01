@@ -5,6 +5,7 @@ export default {
         url: 'https://vue3-course-api.hexschool.io',
         path: 'vs',
         loading: false,
+        requiredProps: ['title', 'percent', 'code'],
       }
     },
     // 外面傳遞資料進來，再用 $emit('自訂名稱', 要送的資料)傳出去
@@ -63,10 +64,7 @@ export default {
         })
       },
       checkProps() {
-        let requiredProps = [];
-        let hasAll = null;
-        requiredProps = ['title', 'percent', 'code'];
-        hasAll = requiredProps.every(prop => this.tempData.hasOwnProperty(prop));
+        let hasAll = this.requiredProps.every(prop => this.tempData.hasOwnProperty(prop));
         return !hasAll
       },
     },

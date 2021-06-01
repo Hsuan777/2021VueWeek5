@@ -4,6 +4,7 @@ export default {
         url: 'https://vue3-course-api.hexschool.io',
         path: 'vs',
         loading: false,
+        requiredProps: ['title', 'author', 'content'],
       }
     },
     props: ['tempData', 'modal'],
@@ -54,10 +55,7 @@ export default {
         })
       },
       checkProps() {
-        let requiredProps = [];
-        let hasAll = null;
-        requiredProps = ['title', 'author', 'content'];
-        hasAll = requiredProps.every(prop => this.tempData.hasOwnProperty(prop));
+        let hasAll = this.requiredProps.every(prop => this.tempData.hasOwnProperty(prop));
         return !hasAll
       },
     },
