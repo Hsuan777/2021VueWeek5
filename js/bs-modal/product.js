@@ -68,12 +68,13 @@ export default {
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
+          {{tempData.option}}
             <h5 class="modal-title text-primary" id="productModalLabel" v-if="tempData.id === undefined">新增商品</h5>
             <h5 class="modal-title" id="productModalLabel" v-else>修改商品</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <v-form action="" v-slot="{ errors }" ref="productForm">
-            <div class="modal-body">    
+            <div class="modal-body">
               <div class="row g-3">
                 <div class="col-12">
                   <label for="productName" class="form-label">商品名稱<span class="text-danger">*</span></label>
@@ -108,11 +109,18 @@ export default {
                   <v-field id="productUnit" name="單位" type="text" class="form-control" :class="{ 'is-invalid': errors['單位'] }" rules="required" v-model="tempData.unit"></v-field>
                   <error-message name="單位" class="invalid-feedback"></error-message>
                 </div>
-                <div class="col">
-                  <label for="productStart" class="form-label">推薦等級<span class="text-danger">*</span></label>
-                  <v-field id="productStarts" name="推薦等級" type="number" class="form-control" :class="{ 'is-invalid': errors['推薦等級'] }" rules="min_value:0" v-model="tempData.starts"></v-field>
-                  <error-message name="推薦等級" class="invalid-feedback"></error-message>
-                </div>
+                <template v-if="tempData.category">
+                  <div class="col" v-show="tempData.category === '課程'">
+                    <label for="productStars" class="form-label">難易度</label>
+                    <v-field id="productStars" name="難易度" type="number" class="form-control" :class="{ 'is-invalid': errors['難易度'] }" rules="max_value:5|min_value:1" v-model="tempData.options.stars"></v-field>
+                    <error-message name="難易度" class="invalid-feedback"></error-message>
+                  </div>
+                  <div class="col" v-show="tempData.category === '餐飲'">
+                    <label for="productCalorie" class="form-label">卡路里</label>
+                    <v-field id="productCalorie" name="卡路里" type="number" class="form-control" :class="{ 'is-invalid': errors['卡路里'] }" rules="min_value:0" v-model="tempData.options.calorie"></v-field>
+                    <error-message name="卡路里" class="invalid-feedback"></error-message>
+                  </div>
+                </template>
                 <div class="col-12">
                   <div class="d-flex align-items-center mb-2">
                     <label for="productImageUrl" class="form-label mb-0">主圖網址</label>

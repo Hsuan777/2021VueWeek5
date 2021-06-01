@@ -25,14 +25,15 @@ const App = Vue.createApp({
       },
       tempData: {
         product: {
-          images: []
+          imagesUrl: [],
+          options:[]
         },
-        productPages: 0,
-        currentPage: 1,
         coupon: {},
         article: {
           tag:[],
         },
+        productPages: 0,
+        currentPage: 1,
         modal: ''
       },
       loading: false
@@ -367,16 +368,21 @@ const App = Vue.createApp({
       this.tempData.product = {imagesUrl:[], options: {}};
       this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
+      return {...this.tempData[this.currentTab.enName]}
     },
     editTempData(item) {
       this.tempData[this.currentTab.enName] = {...item};
       // 避免傳入時元件內新增的屬性 proxy 抓不到，在這邊先建立好
       if (!this.tempData.article.tag) {
         this.tempData.article.tag = [];
-      }
+      } 
       if (!this.tempData.product.imagesUrl) {
         this.tempData.product.imagesUrl = [];
       }
+      if (!this.tempData.product.options) {
+        this.tempData.product.options = {}
+      }
+      console.log(this.tempData.product.options);
       this.tempData.modal = new bootstrap.Modal(document.getElementById(this.currentTab.enName+'Modal'));
       this.tempData.modal.show();
     },
