@@ -5,7 +5,7 @@ p {
   color: #363B48;
 }
 img {
-  object-fit: contain;
+  object-fit: cover;
 }
 a {
   color: map-get($theme-colors, 'primary');
@@ -17,4 +17,38 @@ a {
 .page-item.active .page-link {
   border-color: map-get($theme-colors, 'primary');
   background-color: map-get($theme-colors, 'primary');
+}
+.custom {
+  &__cart {
+    right: -4%;
+    top: 120%;
+  }
+  &__categoryTab {
+    position: sticky;
+    top: 60px;
+    z-index: 99;
+    border-bottom: 1px #dee2e6 solid;
+    @include media-breakpoint-down(lg) {
+      position: fixed;
+      top: 93.5%;
+      .custom__select {
+        border-top: 1px #dee2e6 solid;
+        border-bottom: 0;
+      }
+    }
+  }
+  &__select {
+    &:hover{
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+  }
+  &__product {
+    &__img {
+      height: 185px;
+      @include media-breakpoint-down(lg) {
+        height: 128px;
+      }
+    }
+  }
 }

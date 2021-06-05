@@ -2,44 +2,87 @@ const App = Vue.createApp({
   data() {
     return {
       url: 'https://vue3-course-api.hexschool.io',
-      userInfo: {},
+      path:'vs',
+      originData: {
+        products: {},
+        cartsData: {}
+      },
+      tempData: {
+        cartTotal: 0
+      }
     };
   },
   methods: {
-    signIn() {
-      axios.post(`${this.url}/admin/signin`, this.userInfo).then(res => {
-        const {token, expired} = res.data
-        // 登入與登出屬性必須一致，才能更新。
-        document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
-        this.userInfo = {}
-        this.$refs.signForm.resetForm();
+    getProductsAll() {
+      const apiUrl = `${this.url}/api/${this.path}/products/all`;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
-          window.location.assign('./manage.html');
+          this.originData.products = res.data.products;
         } else {
-          console.log(res.data.message);
+          alert(res.data.message);
         }
-      }).catch(() => {
-        console.log('登入失敗!');
-      })
-    },
-    logOut() {
-      axios.post(`${this.url}/logout`).then(res => {
-        document.cookie = `hexToken=; expires=; path=/`;
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
         console.log(res.data);
       })
     },
-    checkLogin() {
-      const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-      axios.defaults.headers.common['Authorization'] = token;
-      axios.post(`${this.url}/api/user/check`).then(res => {
+    getCartList() {
+      const apiUrl = `${this.url}/api/${this.path}/cart`;
+      // let count = 0;
+      axios.get(apiUrl).then(res => {
         if (res.data.success) {
-          window.location.assign('./manage.html')
+          this.originData.cartsData = res.data.data;
+          // 從 computed 取得該變數所 return 的值
+          this.tempData.cartTotal = this.cartCount;
+        } else {
+          alert(res.data.message);
         }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res);
+      })
+    },
+    addCart(itemID) {
+      const apiUrl = `${this.url}/api/${this.path}/cart`;
+      let productData = {data: {product_id: itemID, qty: 1}}
+      axios.post(apiUrl, productData).then(res => {
+        if (res.data.success) {
+          this.getCartList();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res.data);
+      })
+    },
+    deleteCart(itemID) {
+      const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
+      axios.delete(apiUrl).then(res => {
+        if (res.data.success) {
+          this.getCartList();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res.data);
       })
     },
   },
   created() {
-    this.checkLogin();
+    this.getProductsAll();
+    this.getCartList();
+  },
+  computed: {
+    // 這裡的取用方式不用加()，像預先定義的變數取用即可
+    cartCount() {
+      let count = 0
+      this.originData.cartsData.carts.forEach(item => {
+        count += item.qty
+      })
+      return count
+    }
   }
 });
 App.component('VForm', VeeValidate.Form);
