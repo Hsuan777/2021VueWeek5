@@ -9,45 +9,51 @@
 </head>
 <body>
   <div id="app">
+    <!-- 置頂導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container position-relative">
         <a class="navbar-brand" href="#">V.S</a>
-        <a class="nav-link d-lg-none d-flex align-items-center ms-auto" href="#p123" data-bs-toggle="collapse" role="button">
+        <a class="nav-link d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
           <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
           <p class="mb-0">購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)</p>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- 購物車折疊內容 -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto d-flex align-items-center">
-            <a class="nav-link" aria-current="page" href="#">餐飲</a>
-            <a class="nav-link" aria-current="page" href="#">課程</a>
+            <a class="nav-link active" aria-current="page" href="product.html">餐飲與課程</a>
             <a class="nav-link" aria-current="page" href="#">租借場地</a>
             <a class="nav-link btn btn-link d-none d-lg-flex align-items-center" href="#carts" data-bs-toggle="collapse" role="button">
               <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
-              <p class="mb-0">購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)</p>
+              <p class="mb-0">
+                購物車(<span class="text-danger">{{tempData.cartTotal}}</span>) TWD${{originData.cartsData.total}}
+              </p>
             </a>
           </div>
         </div>
         <div id="carts" class="custom__cart collapse position-absolute translate-middle-x">
-          <ul class="list-group">
+          <ul class="list-group" v-if="originData.cartsData.carts[0]">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
-                <p class="mb-0 me-3"> {{item.product.title}}</p>
+                <p class="mb-0 me-5"> {{item.product.title}}</p>
                 <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
               </div>
               <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
                 <span class="ms-auto text-primary">{{'$'+item.total}}</span>
               </p>
             </li>
-            <li class="list-group-item list-group-flush">
-              <div class="d-flex align-items-center mb-2">
-                <p class="d-flex"></p>Total<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
-              </div>
-              <input type="button" value="進行結帳" class="btn btn-primary text-white w-100">
+            <li class="list-group-item">
+              <p class="d-flex">商品合計<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
+              <a href="checkout.html" class="btn btn-primary text-white w-100">
+                <i class="fas fa-list me-2"></i>檢視購物車
+              </a>
             </li>
           </ul>
+          <div class="card card-body" v-else>
+            <p class="mb-0">還沒有商品喔～</p>
+          </div>
         </div>
       </div>
     </nav>  

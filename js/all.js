@@ -5,10 +5,23 @@ const App = Vue.createApp({
       path:'vs',
       originData: {
         products: {},
-        cartsData: {}
+        cartsData: {
+          carts: []
+        }
+      },
+      order: {
+        user: {
+          name: '',
+          email: '',
+          tel: '',
+          address:''  
+        },
+        message: ''
       },
       tempData: {
-        cartTotal: 0
+        cartTotal: 0,
+        couponString: 'test777',
+        order: {}
       }
     };
   },
@@ -28,7 +41,6 @@ const App = Vue.createApp({
     },
     getCartList() {
       const apiUrl = `${this.url}/api/${this.path}/cart`;
-      // let count = 0;
       axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.cartsData = res.data.data;
@@ -56,6 +68,20 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    putCart(itemID, num) {
+      const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
+      let productData = {data: {product_id: itemID, qty: num}}
+      axios.put(apiUrl, productData).then(res => {
+        if (res.data.success) {
+          this.getCartList();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res.data);
+      })
+    },
     deleteCart(itemID) {
       const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
       axios.delete(apiUrl).then(res => {
@@ -69,10 +95,40 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    postCoupon() {
+      const apiUrl = `${this.url}/api/${this.path}/coupon`;
+      axios.post(apiUrl, {data: {code:this.tempData.couponString}}).then(res => {
+        if (res.data.success) {
+          console.log(res.data);
+          this.getCartList();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res.data);
+      }) 
+    },
+    postOrder() {
+      const apiUrl = `${this.url}/api/${this.path}/order`;
+      axios.post(apiUrl, {data:this.tempData.order}).then(res => {
+        if (res.data.success) {
+          console.log(res.data);
+          this.getCartList();
+          this.$refs.orderForm.resetForm();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res.data);
+      }) 
+    },
   },
   created() {
     this.getProductsAll();
     this.getCartList();
+    this.tempData.order = {...this.order};
   },
   computed: {
     // 這裡的取用方式不用加()，像預先定義的變數取用即可
