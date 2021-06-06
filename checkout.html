@@ -23,7 +23,7 @@
         <!-- 購物車折疊內容 -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto d-flex align-items-center">
-            <a class="nav-link" aria-current="page" href="product.html">餐飲與課程</a>
+            <a class="nav-link" aria-current="page" href="productList.html">餐飲與課程</a>
             <a class="nav-link" aria-current="page" href="#">租借場地</a>
             <a class="nav-link btn btn-link d-none d-lg-flex align-items-center" href="#carts" data-bs-toggle="collapse" role="button">
               <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
@@ -56,7 +56,7 @@
     </nav>  
     <div class="container my-5">
       <!-- mobile 反轉購物車與表單 -->
-      <div class="row">
+      <div class="row" v-if="originData.cartsData.carts[0]">
         <!-- 訂購人資訊 -->
         <section class="col-6">
           <h2>訂購人資訊</h2>
@@ -74,7 +74,7 @@
               </div>
               <div class="col">
                 <label for="userTel" class="form-label">聯絡電話<span class="text-danger">*</span></label>
-                <v-field id="userTel" name="聯絡電話" type="number" class="form-control" :class="{ 'is-invalid': errors['聯絡電話'] }" rules="min_value:10|required" v-model="tempData.order.user.tel"></v-field>
+                <v-field id="userTel" name="聯絡電話" type="tel" class="form-control" :class="{ 'is-invalid': errors['聯絡電話'] }" :rules="checkPhone" v-model="tempData.order.user.tel"></v-field>
                 <error-message name="聯絡電話" class="invalid-feedback"></error-message>
               </div>
               <div class="col">
@@ -92,8 +92,13 @@
         </section>
         <!-- 購物車列表 -->
         <section class="col col-lg-6">
-          <h2 class="pb-lg-3 mb-lg-4">購物車列表</h2>
-          <ul class="list-group" v-if="originData.cartsData.carts[0]">
+          <header class="d-flex align-items-center mb-lg-3">
+            <h2 class="mb-0">購物車列表</h2>
+            <button type="button" class="btn btn-link link-secondary ms-auto" @click="deleteCartAll">
+              <i class="far fa-trash-alt ms-auto h2"></i>
+            </button>
+          </header>
+          <ul class="list-group">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
                 <p class="mb-0"> {{item.product.title}}</p>
@@ -113,18 +118,14 @@
             <li class="list-group-item border-0">
               <h5 class="d-flex">商品合計 <span class="text-dark ms-auto">{{'$' + originData.cartsData.total}}</span></h5>
               <h4 class="d-flex">訂單總計 <span class="text-danger ms-auto">{{'$' + Math.floor(originData.cartsData.final_total)}}</span></h5>
-              <!-- 表單驗證 -->
               <div class="input-group w-50 ms-auto">
                 <input type="text" class="form-control text-danger" placeholder="請輸入優惠券代碼" v-model="tempData.couponString">
                 <button class="btn btn-outline-secondary" type="button" @click="postCoupon">套用</button>
               </div>
             </li>
           </ul>
-          <p v-else>還沒有商品喔～</p>
         </section>
-        
       </div>
-      
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

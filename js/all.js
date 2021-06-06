@@ -22,7 +22,7 @@ const App = Vue.createApp({
         cartTotal: 0,
         couponString: 'test777',
         order: {}
-      }
+      },
     };
   },
   methods: {
@@ -36,7 +36,7 @@ const App = Vue.createApp({
         }
       }).catch(res => {
         alert('無法取得資料喔～快去看什麼問題吧！')
-        console.log(res.data);
+        console.log(res);
       })
     },
     getCartList() {
@@ -44,6 +44,10 @@ const App = Vue.createApp({
       axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.cartsData = res.data.data;
+          // cli 時重新拆開
+          if (!this.originData.cartsData.carts[0] && window.location.pathname === '/checkout.html') {
+            window.location.replace('./productList.html');
+          }
           // 從 computed 取得該變數所 return 的值
           this.tempData.cartTotal = this.cartCount;
         } else {
@@ -95,6 +99,20 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    deleteCartAll() {
+      const apiUrl = `${this.url}/api/${this.path}/carts`;
+      axios.delete(apiUrl).then(res => {
+        if (res.data.success) {
+          alert('已無商品囉！')
+          this.getCartList();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res.data);
+      })
+    },
     postCoupon() {
       const apiUrl = `${this.url}/api/${this.path}/coupon`;
       axios.post(apiUrl, {data: {code:this.tempData.couponString}}).then(res => {
@@ -113,22 +131,30 @@ const App = Vue.createApp({
       const apiUrl = `${this.url}/api/${this.path}/order`;
       axios.post(apiUrl, {data:this.tempData.order}).then(res => {
         if (res.data.success) {
-          console.log(res.data);
-          this.getCartList();
+          //  暫時用 alert
+          alert('感謝您的選購');
           this.$refs.orderForm.resetForm();
+          this.getCartList();
         } else {
           alert(res.data.message);
         }
       }).catch(res => {
         alert('無法取得資料喔～快去看什麼問題吧！')
-        console.log(res.data);
+        console.log(res);
       }) 
     },
+    checkPhone(value) {
+      const phoneNumber = /^(09)[0-9]{8}$/;
+      return phoneNumber.test(value) ? true : '需要正確的電話號碼'
+    }
   },
   created() {
     this.getProductsAll();
     this.getCartList();
     this.tempData.order = {...this.order};
+    let getUrlString = location.href
+    let url = new URL(getUrlString);
+    console.log(url.searchParams.get('id'));
   },
   computed: {
     // 這裡的取用方式不用加()，像預先定義的變數取用即可

@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="css/all.css">
-  <title>餐飲與課程</title>
+  <title>維克</title>
 </head>
 <body>
   <div id="app">
@@ -23,7 +22,7 @@
         <!-- 購物車折疊內容 -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto d-flex align-items-center">
-            <a class="nav-link active" aria-current="page" href="product.html">餐飲與課程</a>
+            <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
             <a class="nav-link" aria-current="page" href="#">租借場地</a>
             <a class="nav-link btn btn-link d-none d-lg-flex align-items-center" href="#carts" data-bs-toggle="collapse" role="button">
               <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
@@ -57,48 +56,140 @@
         </div>
       </div>
     </nav>  
-    <!-- 商品頁籤 -->
-    <nav class="custom__categoryTab container-fluid mb-lg-3 bg-white">
-      <div class="container">
-        <ul class="nav row justify-content-around">
-          <li class="custom__select col text-center border-end py-lg-2">
-            <a class="nav-item nav-link link-dark h3 mb-0" href="#">
-              <i class="fas fa-utensils text-primary me-3"></i>餐飲</a>
-          </li>
-          <li class="custom__select col text-center py-lg-2">
-            <a class="nav-item nav-link link-dark h3 mb-0" href="#">
-              <i class="fas fa-dumbbell text-danger me-3"></i>課程</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <!-- 商品列表 -->
-    <section class="container">
-      <ul class="list-unstyled row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
-        <li class="custom__select col" v-for="item in originData.products" :key="item.id">
-          <div class="card card-body border-0">
-            <a href="" class="text-decoration-none link-dark">
-              <img :src="item.imageUrl" alt="item.title" class="custom__product__img mb-2 rounded-3 w-100">
-            </a>
-            <h3 class="mb-0">{{item.title}}<i class="fas fa-info-circle text-primary h6 mb-0"></i></h3>
-            <div class="d-flex align-items-center my-2">
-              <p class="h4 mb-0 text-danger">{{item.price}}</p>
-              <button type="button" class="btn btn-link ms-auto p-0" @click="addCart(item.id)">
-                <i class="fas fa-cart-plus h4 mb-0 text-dark mx-2"></i>
-              </button>
+    <!-- 商品細節 -->
+    <section class="container mt-5">
+      <div class="row justify-content-around">
+        <div class="col-lg-4">
+          <h1>{{originData.product.title}}</h1>
+          <img :src="this.originData.product.imageUrl" alt="" class="img-fluid rounded">
+        </div>
+        <div class="col-lg-6">
+          <h2 class="text-primary">{{originData.product.category}}</h2>
+          <p>{{originData.product.description}}</p>
+          <p>{{originData.product.content}}</p>
+          <p>剩餘數量： {{originData.product.num}}</p>
+          <h4 class="text-end mb-3">售價：{{originData.product.price}}</h4>
+          <p>{{tempData.cartsOfProduct}}</p>
+          <!-- 若購物車沒有，則不顯示 -->
+          <div class="d-flex justify-content-between">
+            <div class="input-group w-50" v-if="tempData.cartsOfProduct">
+              <button class="btn btn-outline-secondary" type="button" @click="putCart(tempData.cartsOfProduct.id, tempData.cartsOfProduct.qyt -1 )" :disabled="tempData.cartsOfProduct.qty - 1 === 0"> - </button>
+              <input type="text" class="form-control text-center text-danger bg-white" :value="tempData.cartsOfProduct.qty" disabled>
+              <button class="btn btn-outline-secondary" type="button" @click="putCart(tempData.cartsOfProduct.id, tempData.cartsOfProduct.qty + 1)"> + </button>
             </div>
-            <p>{{item.description}}</p>
+            <input type="button" value="加入購物車" class="btn btn-primary" @click="addCart(originData.product.id)">
           </div>
-        </li>
-      </ul>
+          <!-- <p>{{originData.product}}</p> -->
+        </div>
+      </div>
     </section>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
   <script src="https://unpkg.com/vue@next"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.1.17/vee-validate.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.1.17/dist/vee-validate-i18n.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.1.17/dist/vee-validate-rules.min.js"></script>
-  <script src="js/all.js"></script>
+  <script>
+    const App = Vue.createApp({
+      data() {
+        return {
+          url: 'https://vue3-course-api.hexschool.io',
+          path:'vs',
+          originData: {
+            product: {},
+            cartsData: {
+              carts: []
+            }
+          },
+          tempData: {
+            cartsOfProduct: {},
+            cartTotal: 0
+          }
+          
+        };
+      },
+      methods: {
+        getProduct() {
+          const apiUrl = `${this.url}/api/${this.path}/product/${this.getProductID}`;
+          axios.get(apiUrl).then(res => {
+            if (res.data.success) {
+              this.originData.product = res.data.product;
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res);
+          })
+        },
+        getCartList() {
+          const apiUrl = `${this.url}/api/${this.path}/cart`;
+          axios.get(apiUrl).then(res => {
+            if (res.data.success) {
+              let cartsOfProduct = null
+              this.originData.cartsData = res.data.data;
+              cartsOfProduct = this.originData.cartsData.carts.filter(item => item.product_id === this.getProductID);
+              this.tempData.cartsOfProduct =  cartsOfProduct[0]        
+                   // 從 computed 取得該變數所 return 的值
+              this.tempData.cartTotal = this.cartCount;
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res);
+          })
+        },
+        addCart(itemID) {
+          const apiUrl = `${this.url}/api/${this.path}/cart`;
+          let productData = {data: {product_id: itemID, qty: 1}}
+          axios.post(apiUrl, productData).then(res => {
+            if (res.data.success) {
+              this.getCartList();
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res.data);
+          })
+        },
+        putCart(itemID, num) {
+          const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
+          let productData = {data: {product_id: itemID, qty: num}}
+          axios.put(apiUrl, productData).then(res => {
+            if (res.data.success) {
+              this.getCartList();
+              this.getProduct();
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res.data);
+          })
+        },
+      },
+      created() {
+        this.getCartList();
+        this.getProduct();
+      },
+      computed: {
+        cartCount() {
+          let count = 0
+          this.originData.cartsData.carts.forEach(item => {
+            count += item.qty;
+          })
+          return count;
+        },
+        getProductID() {
+          let getUrlString = location.href;
+          let url = new URL(getUrlString);
+          return url.searchParams.get('id');
+        },
+      }
+    });
+    App.mount("#app");
+  </script>
 </body>
 </html>
