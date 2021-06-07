@@ -47,8 +47,9 @@ const App = Vue.createApp({
       axios.get(apiUrl).then(res => {
         if (res.data.success) {
           this.originData.cartsData = res.data.data;
+          console.log(window.location)
           // cli 時重新拆開
-          if (!this.originData.cartsData.carts[0] && window.location.pathname === '/checkout.html') {
+          if (!this.originData.cartsData.carts[0] && window.location.pathname === '/2021VueWeek5/checkout.html') {
             window.location.replace('./productList.html');
           }
           // 從 computed 取得該變數所 return 的值
