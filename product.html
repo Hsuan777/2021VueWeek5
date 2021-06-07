@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/all.css">
-  <title>維克</title>
+  <title>商品</title>
 </head>
 <body>
   <div id="app">
     <!-- 置頂導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container position-relative">
-        <a class="navbar-brand" href="#">V.S</a>
+        <a class="navbar-brand" href="index.html">V.S</a>
         <a class="nav-link d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
           <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
           <p class="mb-0">購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)</p>
@@ -19,7 +19,6 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- 購物車折疊內容 -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto d-flex align-items-center">
             <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
@@ -32,6 +31,7 @@
             </a>
           </div>
         </div>
+        <!-- 購物車折疊內容 -->
         <div id="carts" class="custom__cart collapse position-absolute translate-middle-x">
           <ul class="list-group" v-if="originData.cartsData.carts[0]">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
@@ -67,19 +67,17 @@
           <h2 class="text-primary">{{originData.product.category}}</h2>
           <p>{{originData.product.description}}</p>
           <p>{{originData.product.content}}</p>
-          <p>剩餘數量： {{originData.product.num}}</p>
           <h4 class="text-end mb-3">售價：{{originData.product.price}}</h4>
-          <p>{{tempData.cartsOfProduct}}</p>
           <!-- 若購物車沒有，則不顯示 -->
           <div class="d-flex justify-content-between">
-            <div class="input-group w-50" v-if="tempData.cartsOfProduct">
-              <button class="btn btn-outline-secondary" type="button" @click="putCart(tempData.cartsOfProduct.id, tempData.cartsOfProduct.qyt -1 )" :disabled="tempData.cartsOfProduct.qty - 1 === 0"> - </button>
-              <input type="text" class="form-control text-center text-danger bg-white" :value="tempData.cartsOfProduct.qty" disabled>
-              <button class="btn btn-outline-secondary" type="button" @click="putCart(tempData.cartsOfProduct.id, tempData.cartsOfProduct.qty + 1)"> + </button>
+            <div class="input-group w-50" >
+              <button class="btn btn-outline-secondary" type="button" @click="tempData.cartsOfProduct.qty -= 1" :disabled="tempData.cartsOfProduct.qty - 1 === 0"> - </button>
+              <input type="text" class="form-control text-center text-danger bg-white" v-model="tempData.cartsOfProduct.qty" disabled>
+              <button class="btn btn-outline-secondary" type="button" @click="tempData.cartsOfProduct.qty += 1"> + </button>
             </div>
-            <input type="button" value="加入購物車" class="btn btn-primary" @click="addCart(originData.product.id)">
+            <input type="button" value="加入購物車" class="btn btn-primary" @click="putCart(tempData.cartsOfProduct)" v-if="tempData.cartsOfProduct.id">
+            <input type="button" value="加入購物車" class="btn btn-primary" @click="addCart(originData.product.id, tempData.cartsOfProduct.qty)" v-else>
           </div>
-          <!-- <p>{{originData.product}}</p> -->
         </div>
       </div>
     </section>
@@ -103,7 +101,9 @@
             }
           },
           tempData: {
-            cartsOfProduct: {},
+            cartsOfProduct: {
+              qty: 1,
+            },
             cartTotal: 0
           }
           
@@ -111,7 +111,10 @@
       },
       methods: {
         getProduct() {
-          const apiUrl = `${this.url}/api/${this.path}/product/${this.getProductID}`;
+          let getUrlString = location.href;
+          let url = new URL(getUrlString);
+          let productID = url.searchParams.get('id');
+          const apiUrl = `${this.url}/api/${this.path}/product/${productID}`;
           axios.get(apiUrl).then(res => {
             if (res.data.success) {
               this.originData.product = res.data.product;
@@ -127,11 +130,16 @@
           const apiUrl = `${this.url}/api/${this.path}/cart`;
           axios.get(apiUrl).then(res => {
             if (res.data.success) {
-              let cartsOfProduct = null
+              let getUrlString = location.href;
+              let url = new URL(getUrlString);
+              let productID = url.searchParams.get('id');
+              let cartsOfProduct = [];
               this.originData.cartsData = res.data.data;
-              cartsOfProduct = this.originData.cartsData.carts.filter(item => item.product_id === this.getProductID);
-              this.tempData.cartsOfProduct =  cartsOfProduct[0]        
-                   // 從 computed 取得該變數所 return 的值
+              cartsOfProduct = this.originData.cartsData.carts.filter(item => item.product.id === productID);
+              if (cartsOfProduct[0]) {
+                this.tempData.cartsOfProduct = cartsOfProduct[0];
+              }
+              // 從 computed 取得該變數所 return 的值
               this.tempData.cartTotal = this.cartCount;
             } else {
               alert(res.data.message);
@@ -141,9 +149,9 @@
             console.log(res);
           })
         },
-        addCart(itemID) {
+        addCart(itemID, num) {
           const apiUrl = `${this.url}/api/${this.path}/cart`;
-          let productData = {data: {product_id: itemID, qty: 1}}
+          let productData = {data: {product_id: itemID, qty: num}}
           axios.post(apiUrl, productData).then(res => {
             if (res.data.success) {
               this.getCartList();
@@ -155,13 +163,29 @@
             console.log(res.data);
           })
         },
-        putCart(itemID, num) {
-          const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
-          let productData = {data: {product_id: itemID, qty: num}}
+        putCart(item) {
+          // 必須是購物車 ID 作為 apiUrl，去更新購物車商品
+          const apiUrl = `${this.url}/api/${this.path}/cart/${item.id}`;
+          let productData = {data: {product_id: item.product_id, qty: item.qty}}
           axios.put(apiUrl, productData).then(res => {
             if (res.data.success) {
               this.getCartList();
               this.getProduct();
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res.data);
+          })
+        },
+        deleteCart(itemID) {
+          const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
+          axios.delete(apiUrl).then(res => {
+            if (res.data.success) {
+              this.getProduct();
+              this.getCartList();
+              this.tempData.cartsOfProduct = { qty: 1};
             } else {
               alert(res.data.message);
             }
@@ -182,11 +206,6 @@
             count += item.qty;
           })
           return count;
-        },
-        getProductID() {
-          let getUrlString = location.href;
-          let url = new URL(getUrlString);
-          return url.searchParams.get('id');
         },
       }
     });

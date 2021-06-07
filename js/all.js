@@ -60,6 +60,7 @@ const App = Vue.createApp({
     },
     addCart(itemID) {
       const apiUrl = `${this.url}/api/${this.path}/cart`;
+      console.log(itemID);
       let productData = {data: {product_id: itemID, qty: 1}}
       axios.post(apiUrl, productData).then(res => {
         if (res.data.success) {
@@ -72,9 +73,9 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
-    putCart(itemID, num) {
-      const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
-      let productData = {data: {product_id: itemID, qty: num}}
+    putCart(item, num) {
+      const apiUrl = `${this.url}/api/${this.path}/cart/${item.id}`;
+      let productData = {data: {product_id: item.product_id, qty: num}}
       axios.put(apiUrl, productData).then(res => {
         if (res.data.success) {
           this.getCartList();
@@ -152,9 +153,6 @@ const App = Vue.createApp({
     this.getProductsAll();
     this.getCartList();
     this.tempData.order = {...this.order};
-    let getUrlString = location.href
-    let url = new URL(getUrlString);
-    console.log(url.searchParams.get('id'));
   },
   computed: {
     // 這裡的取用方式不用加()，像預先定義的變數取用即可

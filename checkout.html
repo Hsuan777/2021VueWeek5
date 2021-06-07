@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="css/all.css">
-  <title>餐飲與課程</title>
+  <title>檢視購物車</title>
 </head>
 <body>
   <div id="app">
     <!-- 置頂導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container position-relative">
-        <a class="navbar-brand" href="#">V.S</a>
+        <a class="navbar-brand" href="index.html">V.S</a>
         <a class="nav-link d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
           <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
           <p class="mb-0">購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)</p>
@@ -20,7 +20,6 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- 購物車折疊內容 -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto d-flex align-items-center">
             <a class="nav-link" aria-current="page" href="productList.html">餐飲與課程</a>
@@ -33,6 +32,7 @@
             </a>
           </div>
         </div>
+        <!-- 購物車折疊內容 -->
         <div id="carts" class="custom__cart collapse position-absolute translate-middle-x">
           <ul class="list-group">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
@@ -58,7 +58,7 @@
       <!-- mobile 反轉購物車與表單 -->
       <div class="row" v-if="originData.cartsData.carts[0]">
         <!-- 訂購人資訊 -->
-        <section class="col-6">
+        <section class="col-lg-6">
           <h2>訂購人資訊</h2>
           <v-form action="" v-slot="{ errors }" ref="orderForm" @submit="postOrder">
             <div class="row row-cols-1 g-3">
@@ -91,7 +91,7 @@
           </v-form>
         </section>
         <!-- 購物車列表 -->
-        <section class="col col-lg-6">
+        <section class="col-lg-6">
           <header class="d-flex align-items-center mb-lg-3">
             <h2 class="mb-0">購物車列表</h2>
             <button type="button" class="btn btn-link link-secondary ms-auto" @click="deleteCartAll">
@@ -101,16 +101,17 @@
           <ul class="list-group">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
-                <p class="mb-0"> {{item.product.title}}</p>
+                <a :href="'product.html?id=' + item.product.id" class="me-5">{{item.product.title}}</a>
+                <!-- <p class="mb-0"> {{item.product.title}}</p> -->
                 <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
               </div>
               <div class="d-flex justify-content-between align-items-center">
                 <p class="h6 mb-0 me-3">{{'$' + item.product.price + ' x '}}</p>
                 <!-- 數量增減 -->
                 <div class="input-group w-50">
-                  <button class="btn btn-outline-secondary" type="button" @click="putCart(item.id, item.qty -1 )" :disabled="item.qty - 1 === 0"> - </button>
+                  <button class="btn btn-outline-secondary" type="button" @click="putCart(item, item.qty -1 )" :disabled="item.qty - 1 === 0"> - </button>
                   <input type="text" class="form-control text-center text-danger" placeholder="" :value="item.qty" disabled>
-                  <button class="btn btn-outline-secondary" type="button" @click="putCart(item.id, item.qty + 1)"> + </button>
+                  <button class="btn btn-outline-secondary" type="button" @click="putCart(item, item.qty + 1)"> + </button>
                 </div>
                 <span class="text-primary">{{'$'+item.total}}</span>
               </div>

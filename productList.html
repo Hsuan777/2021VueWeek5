@@ -12,7 +12,7 @@
     <!-- 置頂導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container position-relative">
-        <a class="navbar-brand" href="#">V.S</a>
+        <a class="navbar-brand" href="index.html">V.S</a>
         <a class="nav-link d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
           <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
           <p class="mb-0">購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)</p>
@@ -20,7 +20,6 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- 購物車折疊內容 -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto d-flex align-items-center">
             <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
@@ -33,15 +32,16 @@
             </a>
           </div>
         </div>
+        <!-- 購物車折疊內容 -->
         <div id="carts" class="custom__cart collapse position-absolute translate-middle-x">
           <ul class="list-group" v-if="originData.cartsData.carts[0]">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
-                <p class="mb-0 me-5"> {{item.product.title}}</p>
+                <a :href="'product.html?id=' + item.id" class="me-5">{{item.product.title}}</a>
                 <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
               </div>
               <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
-                <span class="ms-auto text-primary">{{'$'+item.total}}</span>
+                <span class="ms-auto">{{'$'+item.total}}</span>
               </p>
             </li>
             <li class="list-group-item">
