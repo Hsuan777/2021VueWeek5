@@ -146,20 +146,6 @@ const App = Vue.createApp({
         console.log(res);
       }) 
     },
-    putOrder(orderID) {
-      const apiUrl = `${this.url}/api/${this.path}/pay/${orderID}`;
-      axios.put(apiUrl).then(res => {
-        if (res.data.success) {
-          alert(res.data.message)
-          window.location.replace(`./productList.html`);
-        } else {
-          alert(res.data.message);
-        }
-      }).catch(res => {
-        alert('無法取得資料喔～快去看什麼問題吧！')
-        console.log(res);
-      }) 
-    },
     checkPhone(value) {
       const phoneNumber = /^(09)[0-9]{8}$/;
       return phoneNumber.test(value) ? true : '需要正確的電話號碼'
