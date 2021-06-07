@@ -23,6 +23,9 @@ const App = Vue.createApp({
         couponString: 'test777',
         order: {}
       },
+      addLoadingItem: {
+        id: ''
+      }
     };
   },
   methods: {
@@ -59,10 +62,12 @@ const App = Vue.createApp({
       })
     },
     addCart(itemID) {
+      this.addLoadingItem.id = itemID;
       const apiUrl = `${this.url}/api/${this.path}/cart`;
       let productData = {data: {product_id: itemID, qty: 1}}
       axios.post(apiUrl, productData).then(res => {
         if (res.data.success) {
+          this.addLoadingItem.id = '';
           this.getCartList();
         } else {
           alert(res.data.message);
@@ -72,11 +77,14 @@ const App = Vue.createApp({
         console.log(res.data);
       })
     },
+    // cli 時拆開
     putCart(item, num) {
       const apiUrl = `${this.url}/api/${this.path}/cart/${item.id}`;
       let productData = {data: {product_id: item.product_id, qty: num}}
+      this.addLoadingItem.id = item.id;
       axios.put(apiUrl, productData).then(res => {
         if (res.data.success) {
+          this.addLoadingItem.id = ''
           this.getCartList();
         } else {
           alert(res.data.message);

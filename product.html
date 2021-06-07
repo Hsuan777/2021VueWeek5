@@ -40,7 +40,7 @@
           <ul class="list-group" v-if="originData.cartsData.carts[0]">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
-                <p class="mb-0 me-5"> {{item.product.title}}</p>
+                <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
                 <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
               </div>
               <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
@@ -74,15 +74,21 @@
           <p>{{originData.product.description}}</p>
           <p>{{originData.product.content}}</p>
           <h4 class="text-end mb-3">售價：{{originData.product.price}}</h4>
-          <!-- 若購物車沒有，則不顯示 -->
           <div class="d-flex justify-content-between">
             <div class="input-group w-50" >
               <button class="btn btn-outline-secondary" type="button" @click="tempData.cartsOfProduct.qty -= 1" :disabled="tempData.cartsOfProduct.qty - 1 === 0"> - </button>
               <input type="text" class="form-control text-center text-danger bg-white" v-model="tempData.cartsOfProduct.qty" disabled>
               <button class="btn btn-outline-secondary" type="button" @click="tempData.cartsOfProduct.qty += 1"> + </button>
             </div>
-            <input type="button" value="加入購物車" class="btn btn-primary" @click="putCart(tempData.cartsOfProduct)" v-if="tempData.cartsOfProduct.id">
-            <input type="button" value="加入購物車" class="btn btn-primary" @click="addCart(originData.product.id, tempData.cartsOfProduct.qty)" v-else>
+            <template>
+            </template>
+            <div class="spinner-border text-danger ms-auto" role="status" v-if="addLoading">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <template v-else>
+              <input type="button" value="加入購物車" class="btn btn-primary text-white" @click="putCart(tempData.cartsOfProduct)" v-if="tempData.cartsOfProduct.id">
+              <input type="button" value="加入購物車" class="btn btn-primary text-white" @click="addCart(originData.product.id, tempData.cartsOfProduct.qty)" v-else>
+            </template>
           </div>
         </div>
       </div>
@@ -111,8 +117,8 @@
               qty: 1,
             },
             cartTotal: 0
-          }
-          
+          },
+          addLoading: false
         };
       },
       methods: {
@@ -152,8 +158,10 @@
         addCart(itemID, num) {
           const apiUrl = `${this.url}/api/${this.path}/cart`;
           let productData = {data: {product_id: itemID, qty: num}}
+          this.addLoading = true;
           axios.post(apiUrl, productData).then(res => {
             if (res.data.success) {
+              this.addLoading = false;
               this.getCartList();
             } else {
               alert(res.data.message);
@@ -167,8 +175,10 @@
           // 必須是購物車 ID 作為 apiUrl，去更新購物車商品
           const apiUrl = `${this.url}/api/${this.path}/cart/${item.id}`;
           let productData = {data: {product_id: item.product_id, qty: item.qty}}
+          this.addLoading = true;
           axios.put(apiUrl, productData).then(res => {
             if (res.data.success) {
+              this.addLoading = false;
               this.getCartList();
               this.getProduct();
             } else {

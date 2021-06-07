@@ -41,7 +41,7 @@
           <ul class="list-group">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
-                <p class="mb-0 me-5"> {{item.product.title}}</p>
+                <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
                 <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
               </div>
               <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
@@ -91,6 +91,7 @@
                 <v-field id="userMessage" name="備註" type="text" class="form-control" :class="{ 'is-invalid': errors['備註'] }" rules="" v-model="tempData.order.message" as="textarea" rows="3"></v-field>
                 <error-message name="備註" class="invalid-feedback"></error-message>
               </div>
+              <!-- RWD 時置底 -->
               <input type="submit" value="送出訂單" class="btn btn-primary text-white" :disabled="Object.keys(errors).length !== 0">
           </v-form>
         </section>
@@ -114,7 +115,10 @@
               <div class="d-flex justify-content-between align-items-center">
                 <p class="h6 mb-0 me-3">{{'$' + item.product.price + ' x '}}</p>
                 <!-- 數量增減 -->
-                <div class="input-group w-50">
+                <div class="spinner-border spinner-border-sm text-danger ms-auto me-3" role="status" v-if="addLoadingItem.id === item.id">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="input-group w-50" v-else>
                   <button class="btn btn-outline-secondary" type="button" @click="putCart(item, item.qty -1 )" :disabled="item.qty - 1 === 0"> - </button>
                   <input type="text" class="form-control text-center text-danger" placeholder="" :value="item.qty" disabled>
                   <button class="btn btn-outline-secondary" type="button" @click="putCart(item, item.qty + 1)"> + </button>

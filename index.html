@@ -40,7 +40,7 @@
           <ul class="list-group" v-if="originData.cartsData.carts[0]">
             <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
               <div class="d-flex align-items-center">
-                <a :href="'product.html?id=' + item.id" class="me-5">{{item.product.title}}</a>
+                <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
                 <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
               </div>
               <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
