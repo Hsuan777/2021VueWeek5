@@ -133,9 +133,25 @@ const App = Vue.createApp({
       axios.post(apiUrl, {data:this.tempData.order}).then(res => {
         if (res.data.success) {
           //  暫時用 alert
-          alert('感謝您的選購');
+          alert('感謝您的選購，還請確認付款資訊，謝謝。');
           this.$refs.orderForm.resetForm();
           this.getCartList();
+          window.location.replace(`./order.html?id=${res.data.orderId}`);
+          console.log(res.data.orderId);
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(res => {
+        alert('無法取得資料喔～快去看什麼問題吧！')
+        console.log(res);
+      }) 
+    },
+    putOrder(orderID) {
+      const apiUrl = `${this.url}/api/${this.path}/pay/${orderID}`;
+      axios.put(apiUrl).then(res => {
+        if (res.data.success) {
+          alert(res.data.message)
+          window.location.replace(`./productList.html`);
         } else {
           alert(res.data.message);
         }
@@ -163,7 +179,7 @@ const App = Vue.createApp({
       })
       return count
     }
-  }
+  },
 });
 App.component('VForm', VeeValidate.Form);
 App.component('VField', VeeValidate.Field);
@@ -173,7 +189,6 @@ Object.keys(VeeValidateRules).forEach(rule => {
     VeeValidate.defineRule(rule, VeeValidateRules[rule]);
   }
 });
-
 VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
 // Activate the locale
 VeeValidate.configure({

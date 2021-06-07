@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/all.css">
+  <title>維克健身餐飲複合工作室</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 置頂導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+      <div class="container position-relative">
+        <a class="navbar-brand" href="index.html">V.S</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav ms-auto d-flex align-items-center">
+            <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
+            <a class="nav-link" aria-current="page" href="#">租借場地</a>
+          </div>
+        </div>
+      </div>
+    </nav>  
+    <!--  -->
+    <section class="container mt-5">
+      <h2 class="text-center">感謝您的訂購!</h2>
+      <h3 class="text-center">以下是您的訂購資訊，請確認後進行<span class="text-danger">付款</span>。</h3>
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <table class="table table-bordered border-secondary">
+            <tbody>
+              <tr>
+                <th>訂購時間</th>
+                <td>{{new Date().toLocaleString(order.user.create_at)}}</td>
+              </tr>
+              <tr>
+                <th>訂購 ID (請記下可再查詢)</th>
+                <td>{{order.id}}</td>
+              </tr>
+              <tr>
+                <th>訂購人</th>
+                <td>{{order.user.name}}</td>
+              </tr>
+              <tr>
+                <th>聯絡信箱</th>
+                <td>{{order.user.email}}</td>
+              </tr>
+              <tr>
+                <th>聯絡電話</th>
+                <td>{{order.user.tel}}</td>
+              </tr>
+              <tr>
+                <th>地址</th>
+                <td>{{order.user.address}}</td>
+              </tr>
+              <tr>
+                <th>商品清單</th>
+                <td>
+                  <p class="d-flex mb-0" v-for="item in order.products">{{item.product.title}} x {{item.qty}} {{item.product.unit}} {{item.coupon.percent}} 折= 
+                    <span class="ms-auto">${{Math.floor(item.final_total)}}</span> </p>
+                  <p class="text-end mb-0 border-top pt-1">合計 : ${{Math.floor(order.total)}}</p>
+                </td>
+              </tr>
+              <tr>
+                <th>您的備註</th>
+                <td>{{order.message}}</td>
+              </tr>
+              <tr>
+                <th>付款狀態</th>
+                <td>{{order.is_paid ? '已付款' : '未付款'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- 無串接金流，故按下後自動付款 -->
+          <input type="button" value="由此付款" class="btn btn-primary text-white d-block w-50 mx-auto" @click="postOrder">
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.1.17/vee-validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.1.17/dist/vee-validate-i18n.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.1.17/dist/vee-validate-rules.min.js"></script>
+  <!-- <script src="js/all.js"></script> -->
+  <script>
+    const App = Vue.createApp({
+      data() {
+        return {
+          url: 'https://vue3-course-api.hexschool.io',
+          path:'vs',
+          order: {
+            user:{}
+          },
+        };
+      },
+      methods: {
+        getOrder() { 
+          const apiUrl = `${this.url}/api/${this.path}/order/${this.getUrlID}`;
+          axios.get(apiUrl).then(res => {
+            // 沒有 ID 也會過...
+            if (res.data.success) {
+              this.order = res.data.order;
+              if (!this.order) {
+                window.location.replace('./productList.html');
+              }
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res);
+          })
+        },
+        postOrder() {
+          const apiUrl = `${this.url}/api/${this.path}/pay/${this.order.id}`;
+          axios.post(apiUrl).then(res => {
+            if (res.data.success) {
+              alert(res.data.message)
+              window.location.replace(`./productList.html`);
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res);
+          }) 
+        },
+      },
+      created() {
+        if (!this.getUrlID) {
+          window.location.replace('./productList.html');
+        }
+        this.getOrder();
+      },
+      computed: {
+        getUrlID() {
+          let getUrlString = location.href;
+          let url = new URL(getUrlString);
+          return url.searchParams.get('id');
+        }
+      }
+    });
+    App.mount("#app");
+  </script>
+</body>
+</html>
