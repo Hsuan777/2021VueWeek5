@@ -8,6 +8,7 @@ cp ../productList.html productList.html
 cp ../product.html product.html
 cp ../checkout.html checkout.html
 cp ../order.html order.html
+cp ../zh_TW.json zh_TW.json
 cp -r ../js js
 cp -r ../css css
 cd css 
