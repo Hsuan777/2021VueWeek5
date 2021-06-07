@@ -111,10 +111,7 @@
       },
       methods: {
         getProduct() {
-          let getUrlString = location.href;
-          let url = new URL(getUrlString);
-          let productID = url.searchParams.get('id');
-          const apiUrl = `${this.url}/api/${this.path}/product/${productID}`;
+          const apiUrl = `${this.url}/api/${this.path}/product/${this.getUrlID}`;
           axios.get(apiUrl).then(res => {
             if (res.data.success) {
               this.originData.product = res.data.product;
@@ -130,12 +127,9 @@
           const apiUrl = `${this.url}/api/${this.path}/cart`;
           axios.get(apiUrl).then(res => {
             if (res.data.success) {
-              let getUrlString = location.href;
-              let url = new URL(getUrlString);
-              let productID = url.searchParams.get('id');
               let cartsOfProduct = [];
               this.originData.cartsData = res.data.data;
-              cartsOfProduct = this.originData.cartsData.carts.filter(item => item.product.id === productID);
+              cartsOfProduct = this.originData.cartsData.carts.filter(item => item.product.id === this.getUrlID);
               if (cartsOfProduct[0]) {
                 this.tempData.cartsOfProduct = cartsOfProduct[0];
               }
@@ -185,7 +179,7 @@
             if (res.data.success) {
               this.getProduct();
               this.getCartList();
-              this.tempData.cartsOfProduct = { qty: 1};
+              this.tempData.cartsOfProduct = {qty: 1};
             } else {
               alert(res.data.message);
             }
@@ -207,6 +201,11 @@
           })
           return count;
         },
+        getUrlID() {
+          let getUrlString = location.href;
+          let url = new URL(getUrlString);
+          return url.searchParams.get('id');
+        }
       }
     });
     App.mount("#app");

@@ -60,7 +60,6 @@ const App = Vue.createApp({
     },
     addCart(itemID) {
       const apiUrl = `${this.url}/api/${this.path}/cart`;
-      console.log(itemID);
       let productData = {data: {product_id: itemID, qty: 1}}
       axios.post(apiUrl, productData).then(res => {
         if (res.data.success) {

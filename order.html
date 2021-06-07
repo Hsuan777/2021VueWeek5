@@ -58,7 +58,8 @@
               <tr>
                 <th>商品清單</th>
                 <td>
-                  <p class="d-flex mb-0" v-for="item in order.products">{{item.product.title}} x {{item.qty}} {{item.product.unit}} {{item.coupon.percent}} 折= 
+                  <!-- 先取得最終價格，優惠券因未套用時會是 undefined，待修正 -->
+                  <p class="d-flex mb-0" v-for="item in order.products">{{item.product.title}} x {{item.qty}} {{item.product.unit}}= 
                     <span class="ms-auto">${{Math.floor(item.final_total)}}</span> </p>
                   <p class="text-end mb-0 border-top pt-1">合計 : ${{Math.floor(order.total)}}</p>
                 </td>
