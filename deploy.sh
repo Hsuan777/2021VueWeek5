@@ -4,7 +4,10 @@ rm dist
 mkdir dist
 cd dist
 cp ../index.html index.html
-cp ../manage.html manage.html
+cp ../productList.html productList.html
+cp ../product.html product.html
+cp ../checkout.html checkout.html
+cp ../order.html order.html
 cp -r ../js js
 cp -r ../css css
 cd css 
