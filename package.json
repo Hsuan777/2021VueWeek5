@@ -9,6 +9,7 @@
   "author": "Vic",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^5.0.0-beta1"
+    "bootstrap": "^5.0.0-beta1",
+    "vue-loading-overlay": "^4.0.3"
   }
 }
