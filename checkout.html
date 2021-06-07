@@ -13,9 +13,12 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container position-relative">
         <a class="navbar-brand" href="index.html">V.S</a>
-        <a class="nav-link d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
-          <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
-          <p class="mb-0">購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)</p>
+        <a class="nav-link btn btn-link link-dark d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
+            <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+          </svg>
+          購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -24,11 +27,12 @@
           <div class="navbar-nav ms-auto d-flex align-items-center">
             <a class="nav-link" aria-current="page" href="productList.html">餐飲與課程</a>
             <a class="nav-link" aria-current="page" href="#">租借場地</a>
-            <a class="nav-link btn btn-link d-none d-lg-flex align-items-center" href="#carts" data-bs-toggle="collapse" role="button">
-              <i class="fas fa-cart-plus h4 mb-0 text-dark me-2"></i>
-              <p class="mb-0">
-                購物車(<span class="text-danger">{{tempData.cartTotal}}</span>) TWD${{originData.cartsData.total}}
-              </p>
+            <a class="nav-link btn btn-link link-dark d-none d-lg-flex align-items-center" href="#carts" data-bs-toggle="collapse" role="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
+                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
+              購物車(<span class="text-danger">{{tempData.cartTotal}}</span>) TWD${{originData.cartsData.total}}
             </a>
           </div>
         </div>
@@ -48,7 +52,7 @@
               <div class="d-flex align-items-center mb-2">
                 <p class="d-flex"></p>目前合計<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
               </div>
-              <input type="button" value="進行結帳" class="btn btn-primary text-white w-100">
+              <a href="productList.html" class="btn btn-primary text-white d-block">繼續選購</a>
             </li>
           </ul>
         </div>
@@ -95,7 +99,10 @@
           <header class="d-flex align-items-center mb-lg-3">
             <h2 class="mb-0">購物車列表</h2>
             <button type="button" class="btn btn-link link-secondary ms-auto" @click="deleteCartAll">
-              <i class="far fa-trash-alt ms-auto h2"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-cart-x" viewBox="0 0 16 16">
+                <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
             </button>
           </header>
           <ul class="list-group">
