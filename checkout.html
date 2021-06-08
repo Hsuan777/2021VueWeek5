@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="css/all.css">
+  <title>檢視購物車</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 置頂導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+      <div class="container position-relative">
+        <a class="navbar-brand" href="index.html">V.S</a>
+        <a class="nav-link btn btn-link link-dark d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
+            <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+          </svg>
+          購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav ms-auto d-flex align-items-center">
+            <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
+            <a class="nav-link" aria-current="page" href="#">租借場地</a>
+            <a class="nav-link btn btn-link link-dark d-none d-lg-flex align-items-center" href="#cartContent" data-bs-toggle="dropdown" data-bs-display="static" role="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
+                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
+              購物車(<span class="text-danger">{{tempData.cartTotal}}</span>) TWD${{originData.cartsData.total}}
+            </a>
+            <!-- 購物車內容 -->
+            <div id="cartContent" class="dropdown-menu dropdown-menu-end me-2">
+              <ul class="list-group list-group-flush" v-if="originData.cartsData.carts[0]">
+                <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
+                  <div class="d-flex align-items-center">
+                    <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
+                    <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
+                  </div>
+                  <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
+                    <span class="ms-auto">{{'$'+item.total}}</span>
+                  </p>
+                </li>
+                <li class="list-group-item">
+                  <p class="d-flex">商品合計<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
+                  <a href="productList.html" class="btn btn-primary text-white d-flex justify-content-center align-items-center">
+                    繼續選購
+                  </a>
+                </li>
+              </ul>
+              <p class="mb-0 text-center" v-else>還沒有商品喔～</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </nav>  
+    <div class="container my-5">
+      <!-- mobile 反轉購物車與表單 -->
+      <div class="row" v-if="originData.cartsData.carts[0]">
+        <!-- 訂購人資訊 -->
+        <section class="col-lg-6">
+          <h2>訂購人資訊</h2>
+          <v-form action="" v-slot="{ errors }" ref="orderForm" @submit="postOrder">
+            <div class="row row-cols-1 g-3">
+              <div class="col">
+                <label for="userName" class="form-label">訂購人姓名<span class="text-danger">*</span></label>
+                <v-field id="userName" name="訂購人姓名" type="text" class="form-control" :class="{ 'is-invalid': errors['訂購人姓名'] }" rules="required" v-model="tempData.order.user.name"></v-field>
+                <error-message name="訂購人姓名" class="invalid-feedback"></error-message>
+              </div>
+              <div class="col">
+                <label for="userEmail" class="form-label">聯絡信箱<span class="text-danger">*</span></label>
+                <v-field id="userEmail" name="聯絡信箱" type="email" class="form-control" :class="{ 'is-invalid': errors['聯絡信箱'] }" rules="email|required" v-model="tempData.order.user.email"></v-field>
+                <error-message name="聯絡信箱" class="invalid-feedback"></error-message>
+              </div>
+              <div class="col">
+                <label for="userTel" class="form-label">聯絡電話<span class="text-danger">*</span></label>
+                <v-field id="userTel" name="聯絡電話" type="tel" class="form-control" :class="{ 'is-invalid': errors['聯絡電話'] }" :rules="checkPhone" v-model="tempData.order.user.tel"></v-field>
+                <error-message name="聯絡電話" class="invalid-feedback"></error-message>
+              </div>
+              <div class="col">
+                <label for="userAddress" class="form-label">聯絡地址(餐飲外送用)<span class="text-danger">*</span></label>
+                <v-field id="userAddress" name="聯絡地址" type="text" class="form-control" :class="{ 'is-invalid': errors['聯絡地址'] }" rules="required" v-model="tempData.order.user.address"></v-field>
+                <error-message name="聯絡地址" class="invalid-feedback"></error-message>
+              </div>
+              <div class="col">
+                <label for="userMessage" class="form-label">備註</label>
+                <v-field id="userMessage" name="備註" type="text" class="form-control" :class="{ 'is-invalid': errors['備註'] }" rules="" v-model="tempData.order.message" as="textarea" rows="3"></v-field>
+                <error-message name="備註" class="invalid-feedback"></error-message>
+              </div>
+              <!-- RWD 時置底 -->
+              <input type="submit" value="送出訂單" class="btn btn-primary text-white" :disabled="Object.keys(errors).length !== 0">
+          </v-form>
+        </section>
+        <!-- 購物車列表 -->
+        <section class="col-lg-6">
+          <header class="d-flex align-items-center mb-lg-3">
+            <h2 class="mb-0">購物車列表</h2>
+            <button type="button" class="btn btn-link link-secondary ms-auto" @click="deleteCartAll">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-cart-x" viewBox="0 0 16 16">
+                <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
+            </button>
+          </header>
+          <ul class="list-group">
+            <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
+              <div class="d-flex align-items-center">
+                <a :href="'product.html?id=' + item.product.id" class="me-5">{{item.product.title}}</a>
+                <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="h6 mb-0 me-3">{{'$' + item.product.price + ' x '}}</p>
+                <!-- 數量增減 -->
+                <div class="spinner-border spinner-border-sm text-danger ms-auto me-3" role="status" v-if="addLoadingItem.id === item.id">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="input-group w-50" v-else>
+                  <button class="btn btn-outline-secondary" type="button" @click="putCart(item, item.qty -1 )" :disabled="item.qty - 1 === 0"> - </button>
+                  <input type="text" class="form-control text-center text-danger" placeholder="" :value="item.qty" disabled>
+                  <button class="btn btn-outline-secondary" type="button" @click="putCart(item, item.qty + 1)"> + </button>
+                </div>
+                <span class="text-primary">{{'$'+item.total}}</span>
+              </div>
+            </li>
+            <li class="list-group-item border-0">
+              <h5 class="d-flex">商品合計 <span class="text-dark ms-auto">{{'$' + originData.cartsData.total}}</span></h5>
+              <h4 class="d-flex">訂單總計 <span class="text-danger ms-auto">{{'$' + Math.floor(originData.cartsData.final_total)}}</span></h5>
+              <div class="input-group w-50 ms-auto">
+                <input type="text" class="form-control text-danger" placeholder="請輸入優惠券代碼" v-model="tempData.couponString">
+                <button class="btn btn-outline-secondary" type="button" @click="postCoupon">套用</button>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.1.17/vee-validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.1.17/dist/vee-validate-i18n.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.1.17/dist/vee-validate-rules.min.js"></script>
+  <script src="js/all.js"></script>
+</body>
+</html>

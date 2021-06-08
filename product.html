@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/all.css">
+  <title>商品</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 置頂導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+      <div class="container position-relative">
+        <a class="navbar-brand" href="index.html">V.S</a>
+        <a class="nav-link btn btn-link link-dark d-lg-none d-flex align-items-center ms-auto" href="#carts" data-bs-toggle="collapse" role="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
+            <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+          </svg>
+          購物車(<span class="text-danger">{{tempData.cartTotal}}</span>)
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav ms-auto d-flex align-items-center">
+            <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
+            <a class="nav-link" aria-current="page" href="#">租借場地</a>
+            <a class="nav-link btn btn-link link-dark d-none d-lg-flex align-items-center" href="#cartContent" data-bs-toggle="dropdown" data-bs-display="static" role="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
+                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
+              購物車(<span class="text-danger">{{tempData.cartTotal}}</span>) TWD${{originData.cartsData.total}}
+            </a>
+            <!-- 購物車內容 -->
+            <div id="cartContent" class="dropdown-menu dropdown-menu-end me-2">
+              <ul class="list-group list-group-flush" v-if="originData.cartsData.carts[0]">
+                <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
+                  <div class="d-flex align-items-center">
+                    <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
+                    <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
+                  </div>
+                  <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
+                    <span class="ms-auto">{{'$'+item.total}}</span>
+                  </p>
+                </li>
+                <li class="list-group-item">
+                  <p class="d-flex">商品合計<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
+                  <a href="checkout.html" class="btn btn-primary text-white d-flex justify-content-center align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list-check me-2" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
+                    </svg>檢視購物車
+                  </a>
+                </li>
+              </ul>
+              <p class="mb-0 text-center" v-else>還沒有商品喔～</p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </nav>  
+    <!-- 商品細節 -->
+    <section class="container mt-5">
+      <div class="row justify-content-around">
+        <div class="col-lg-4">
+          <h1>{{originData.product.title}}</h1>
+          <img :src="this.originData.product.imageUrl" alt="" class="img-fluid rounded">
+        </div>
+        <div class="col-lg-6">
+          <h2 class="text-primary">{{originData.product.category}}</h2>
+          <p>{{originData.product.description}}</p>
+          <p>{{originData.product.content}}</p>
+          <h4 class="text-end mb-3">售價：{{originData.product.price}}</h4>
+          <div class="d-flex justify-content-between">
+            <div class="input-group w-50" >
+              <button class="btn btn-outline-secondary" type="button" @click="tempData.cartsOfProduct.qty -= 1" :disabled="tempData.cartsOfProduct.qty - 1 === 0"> - </button>
+              <input type="text" class="form-control text-center text-danger bg-white" v-model="tempData.cartsOfProduct.qty" disabled>
+              <button class="btn btn-outline-secondary" type="button" @click="tempData.cartsOfProduct.qty += 1"> + </button>
+            </div>
+            <template>
+            </template>
+            <div class="spinner-border text-danger ms-auto" role="status" v-if="addLoading">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <template v-else>
+              <input type="button" value="加入購物車" class="btn btn-primary text-white" @click="putCart(tempData.cartsOfProduct)" v-if="tempData.cartsOfProduct.id">
+              <input type="button" value="加入購物車" class="btn btn-primary text-white" @click="addCart(originData.product.id, tempData.cartsOfProduct.qty)" v-else>
+            </template>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.1.17/vee-validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.1.17/dist/vee-validate-i18n.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.1.17/dist/vee-validate-rules.min.js"></script>
+  <script>
+    const App = Vue.createApp({
+      data() {
+        return {
+          url: 'https://vue3-course-api.hexschool.io',
+          path:'vs',
+          originData: {
+            product: {},
+            cartsData: {
+              carts: []
+            }
+          },
+          tempData: {
+            cartsOfProduct: {
+              qty: 1,
+            },
+            cartTotal: 0
+          },
+          addLoading: false
+        };
+      },
+      methods: {
+        getProduct() {
+          const apiUrl = `${this.url}/api/${this.path}/product/${this.getUrlID}`;
+          axios.get(apiUrl).then(res => {
+            if (res.data.success) {
+              this.originData.product = res.data.product;
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res);
+          })
+        },
+        getCartList() {
+          const apiUrl = `${this.url}/api/${this.path}/cart`;
+          axios.get(apiUrl).then(res => {
+            if (res.data.success) {
+              let cartsOfProduct = [];
+              this.originData.cartsData = res.data.data;
+              cartsOfProduct = this.originData.cartsData.carts.filter(item => item.product.id === this.getUrlID);
+              if (cartsOfProduct[0]) {
+                this.tempData.cartsOfProduct = cartsOfProduct[0];
+              }
+              // 從 computed 取得該變數所 return 的值
+              this.tempData.cartTotal = this.cartCount;
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res);
+          })
+        },
+        addCart(itemID, num) {
+          const apiUrl = `${this.url}/api/${this.path}/cart`;
+          let productData = {data: {product_id: itemID, qty: num}}
+          this.addLoading = true;
+          axios.post(apiUrl, productData).then(res => {
+            if (res.data.success) {
+              this.addLoading = false;
+              this.getCartList();
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res.data);
+          })
+        },
+        putCart(item) {
+          // 必須是購物車 ID 作為 apiUrl，去更新購物車商品
+          const apiUrl = `${this.url}/api/${this.path}/cart/${item.id}`;
+          let productData = {data: {product_id: item.product_id, qty: item.qty}}
+          this.addLoading = true;
+          axios.put(apiUrl, productData).then(res => {
+            if (res.data.success) {
+              this.addLoading = false;
+              this.getCartList();
+              this.getProduct();
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res.data);
+          })
+        },
+        deleteCart(itemID) {
+          const apiUrl = `${this.url}/api/${this.path}/cart/${itemID}`;
+          axios.delete(apiUrl).then(res => {
+            if (res.data.success) {
+              this.getProduct();
+              this.getCartList();
+              this.tempData.cartsOfProduct = {qty: 1};
+            } else {
+              alert(res.data.message);
+            }
+          }).catch(res => {
+            alert('無法取得資料喔～快去看什麼問題吧！')
+            console.log(res.data);
+          })
+        },
+      },
+      created() {
+        this.getCartList();
+        this.getProduct();
+      },
+      computed: {
+        cartCount() {
+          let count = 0
+          this.originData.cartsData.carts.forEach(item => {
+            count += item.qty;
+          })
+          return count;
+        },
+        getUrlID() {
+          let getUrlString = location.href;
+          let url = new URL(getUrlString);
+          return url.searchParams.get('id');
+        }
+      }
+    });
+    App.mount("#app");
+  </script>
+</body>
+</html>
