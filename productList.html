@@ -27,40 +27,39 @@
           <div class="navbar-nav ms-auto d-flex align-items-center">
             <a class="nav-link active" aria-current="page" href="productList.html">餐飲與課程</a>
             <a class="nav-link" aria-current="page" href="#">租借場地</a>
-            <a class="nav-link btn btn-link link-dark d-none d-lg-flex align-items-center" href="#carts" data-bs-toggle="collapse" role="button">
+            <a class="nav-link btn btn-link link-dark d-none d-lg-flex align-items-center" href="#cartContent" data-bs-toggle="dropdown" data-bs-display="static" role="button">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart-check text-dark me-2" viewBox="0 0 16 16">
                 <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
                 <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
               </svg>
               購物車(<span class="text-danger">{{tempData.cartTotal}}</span>) TWD${{originData.cartsData.total}}
             </a>
+            <!-- 購物車內容 -->
+            <div id="cartContent" class="dropdown-menu dropdown-menu-end me-2">
+              <ul class="list-group list-group-flush" v-if="originData.cartsData.carts[0]">
+                <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
+                  <div class="d-flex align-items-center">
+                    <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
+                    <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
+                  </div>
+                  <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
+                    <span class="ms-auto">{{'$'+item.total}}</span>
+                  </p>
+                </li>
+                <li class="list-group-item">
+                  <p class="d-flex">商品合計<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
+                  <a href="checkout.html" class="btn btn-primary text-white d-flex justify-content-center align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list-check me-2" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
+                    </svg>檢視購物車
+                  </a>
+                </li>
+              </ul>
+              <p class="mb-0 text-center" v-else>還沒有商品喔～</p>
+            </div>
           </div>
         </div>
-        <!-- 購物車折疊內容 -->
-        <div id="carts" class="custom__cart collapse position-absolute translate-middle-x">
-          <ul class="list-group" v-if="originData.cartsData.carts[0]">
-            <li class="list-group-item" v-for="item in originData.cartsData.carts" :key="item.id">
-              <div class="d-flex align-items-center">
-                <a :href="'product.html?id=' + item.product_id" class="me-5">{{item.product.title}}</a>
-                <input type="button" value="X" class="btn btn-link btn-sm pe-0 text-decoration-none link-secondary ms-auto" @click="deleteCart(item.id)">
-              </div>
-              <p class="d-flex mb-0">{{'$' + item.product.price + ' x ' + item.qty}}
-                <span class="ms-auto">{{'$'+item.total}}</span>
-              </p>
-            </li>
-            <li class="list-group-item">
-              <p class="d-flex">商品合計<span class="text-danger ms-auto">{{'$' + originData.cartsData.total}}</span></p>
-              <a href="checkout.html" class="btn btn-primary text-white d-flex justify-content-center align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list-check me-2" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
-                </svg>檢視購物車
-              </a>
-            </li>
-          </ul>
-          <div class="card card-body" v-else>
-            <p class="mb-0">還沒有商品喔～</p>
-          </div>
-        </div>
+        
       </div>
     </nav>  
     <!-- 商品頁籤 -->
